@@ -52,6 +52,12 @@ export async function completeFirstAccess(formData: FormData): Promise<FirstAcce
       email,
       password,
       email_confirm: true,
+      app_metadata: {
+        role: 'aluno',
+      },
+      user_metadata: {
+        role: 'aluno',
+      },
     })
 
     if (error) {

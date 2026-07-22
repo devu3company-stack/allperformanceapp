@@ -2,6 +2,24 @@ import prisma from '@/lib/prisma'
 
 export type AppRedirectPath = '/dashboard' | '/feed'
 
+export function getRedirectPathFromRole(role: unknown): AppRedirectPath | null {
+  const normalizedRole = String(role ?? '').trim().toLowerCase()
+
+  if (!normalizedRole) {
+    return null
+  }
+
+  if (normalizedRole === 'aluno') {
+    return '/feed'
+  }
+
+  if (['gestor', 'admin', 'recepcao', 'professor'].includes(normalizedRole)) {
+    return '/dashboard'
+  }
+
+  return null
+}
+
 export async function resolveAccessByEmail(email: string): Promise<AppRedirectPath | null> {
   const normalizedEmail = email.trim().toLowerCase()
 

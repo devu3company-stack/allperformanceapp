@@ -27,6 +27,7 @@ const demoUsers = [
 async function ensureAuthUser(
   email: string,
   password: string,
+  role: string,
   supabaseAdmin: ReturnType<typeof createAdminClient>
 ) {
   const { data, error } = await supabaseAdmin.auth.admin.listUsers()
@@ -43,6 +44,8 @@ async function ensureAuthUser(
       {
         password,
         email_confirm: true,
+        app_metadata: { role },
+        user_metadata: { role },
       }
     )
 
@@ -57,6 +60,8 @@ async function ensureAuthUser(
     email,
     password,
     email_confirm: true,
+    app_metadata: { role },
+    user_metadata: { role },
   })
 
   if (createError) {
@@ -71,7 +76,7 @@ async function main() {
   const supabaseAdmin = createAdminClient()
 
   for (const demoUser of demoUsers) {
-    await ensureAuthUser(demoUser.email, demoUser.password, supabaseAdmin)
+    await ensureAuthUser(demoUser.email, demoUser.password, demoUser.role, supabaseAdmin)
 
     if (demoUser.role === 'gestor') {
       await prisma.usuario.upsert({

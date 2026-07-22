@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { resolveAccessByEmail } from '@/lib/access'
+import { getRedirectPathFromRole, resolveAccessByEmail } from '@/lib/access'
 import { getDevAuthUser, getDevUserRedirectPath } from '@/lib/dev-auth'
 
 export default async function HomePage() {
@@ -17,7 +17,21 @@ export default async function HomePage() {
     redirect('/login')
   }
 
-  const redirectPath = await resolveAccessByEmail(user.email)
+  const redirectPathFromRole = getRedirectPathFromRole(
+    user.app_metadata?.role ?? user.user_metadata?.role
+  )
+
+  if (redirectPathFromRole) {
+    redirect(redirectPathFromRole)
+  }
+
+  let redirectPath = null
+
+  try {
+    redirectPath = await resolveAccessByEmail(user.email)
+  } catch {
+    redirect('/login')
+  }
 
   redirect(redirectPath ?? '/login')
 }

@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { resolveAccessByEmail } from '@/lib/access'
+import { getRedirectPathFromRole, resolveAccessByEmail } from '@/lib/access'
 import {
   clearDevAuthUser,
   findDevUserByCredentials,
@@ -36,7 +36,23 @@ export async function login(formData: FormData) {
     return { error: 'E-mail ou senha incorretos' }
   }
 
-  const redirectPath = await resolveAccessByEmail(email)
+  const redirectPathFromRole = getRedirectPathFromRole(
+    authData.user?.app_metadata?.role ?? authData.user?.user_metadata?.role
+  )
+
+  if (redirectPathFromRole) {
+    revalidatePath('/', 'layout')
+    redirect(redirectPathFromRole)
+  }
+
+  let redirectPath = null
+
+  try {
+    redirectPath = await resolveAccessByEmail(email)
+  } catch {
+    await supabase.auth.signOut()
+    return { error: 'Não foi possível validar o perfil de acesso no momento.' }
+  }
 
   if (redirectPath) {
     revalidatePath('/', 'layout')
