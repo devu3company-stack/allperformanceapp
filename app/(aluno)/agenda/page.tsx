@@ -1,4 +1,5 @@
-import { addDays, format, startOfDay, subMinutes } from 'date-fns'
+import Link from 'next/link'
+import { addDays, format, isValid, parseISO, startOfDay, subMinutes } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import prisma from '@/lib/prisma'
 import { createClient } from '@/lib/supabase/server'
@@ -66,13 +67,36 @@ function getDurationLabel(horaInicio: string, horaFim: string) {
   return `${durationInMinutes} MIN`
 }
 
-export default async function AgendaPage() {
+export default async function AgendaPage({
+  searchParams,
+}: {
+  searchParams?: { dia?: string }
+}) {
   const today = startOfDay(new Date())
-  const periodEnd = addDays(today, 7)
   const upcomingDays = Array.from({ length: 7 }, (_, index) => addDays(today, index))
+  const searchParamsDay = searchParams?.dia
+
+  let selectedDay = today
+
+  if (typeof searchParamsDay === 'string') {
+    const parsedDay = startOfDay(parseISO(searchParamsDay))
+
+    if (isValid(parsedDay)) {
+      const isWithinUpcomingRange = upcomingDays.some(
+        (date) => date.toDateString() === parsedDay.toDateString()
+      )
+
+      if (isWithinUpcomingRange) {
+        selectedDay = parsedDay
+      }
+    }
+  }
+
+  const selectedDayEnd = addDays(selectedDay, 1)
 
   let currentAlunoId: string | null = null
   let displayAulas = mockAulas
+  let usedMockData = true
 
   try {
     currentAlunoId = await getCurrentAlunoId()
@@ -80,8 +104,8 @@ export default async function AgendaPage() {
     const aulas = await prisma.aula.findMany({
       where: {
         data: {
-          gte: today,
-          lt: periodEnd,
+          gte: selectedDay,
+          lt: selectedDayEnd,
         },
         cancelada: false,
       },
@@ -124,11 +148,10 @@ export default async function AgendaPage() {
         status: isBooked ? 'booked' : isBookingClosed ? 'closed' : remainingSpots === 0 ? 'full' : 'available',
         seed: coachName.toLowerCase().replace(/\s+/g, '-'),
       }
-    })
+      })
 
-    if (mappedAulas.length > 0) {
-      displayAulas = mappedAulas
-    }
+    displayAulas = mappedAulas
+    usedMockData = false
   } catch {}
 
   return (
@@ -137,7 +160,7 @@ export default async function AgendaPage() {
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h2 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: '22px', color: '#e2e2e2' }}>Schedule</h2>
         <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', letterSpacing: '0.1em', color: 'rgba(232,188,185,0.7)', textTransform: 'uppercase' }}>
-          {format(today, 'MMMM yyyy', { locale: ptBR }).toUpperCase()}
+          {format(selectedDay, 'MMMM yyyy', { locale: ptBR }).toUpperCase()}
         </span>
       </div>
 
@@ -145,20 +168,45 @@ export default async function AgendaPage() {
       <section style={{ marginBottom: '32px' }}>
         <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px', scrollbarWidth: 'none' }}>
           {upcomingDays.map((date, index) => (
-            <div key={date.toISOString()} style={{ flexShrink: 0, width: '56px', height: '80px', borderRadius: '12px', background: index === 0 ? '#E4002B' : '#1A1A1A', border: index === 0 ? 'none' : '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: index === 0 ? '0 0 15px rgba(228,0,43,0.2)' : 'none' }}>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', letterSpacing: '0.1em', color: index === 0 ? 'rgba(255,246,245,0.8)' : 'rgba(232,188,185,0.7)', marginBottom: '4px', textTransform: 'uppercase' }}>
+            <Link
+              key={date.toISOString()}
+              href={`/agenda?dia=${format(date, 'yyyy-MM-dd')}`}
+              style={{
+                flexShrink: 0,
+                width: '56px',
+                height: '80px',
+                borderRadius: '12px',
+                background: date.toDateString() === selectedDay.toDateString() ? '#E4002B' : '#1A1A1A',
+                border: date.toDateString() === selectedDay.toDateString() ? 'none' : '1px solid rgba(255,255,255,0.05)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: date.toDateString() === selectedDay.toDateString() ? '0 0 15px rgba(228,0,43,0.2)' : 'none',
+                textDecoration: 'none',
+              }}
+            >
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', letterSpacing: '0.1em', color: date.toDateString() === selectedDay.toDateString() ? 'rgba(255,246,245,0.8)' : 'rgba(232,188,185,0.7)', marginBottom: '4px', textTransform: 'uppercase' }}>
                 {format(date, 'EEE', { locale: ptBR }).slice(0, 3).toUpperCase()}
               </span>
-              <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: '24px', color: index === 0 ? '#fff6f5' : '#e2e2e2' }}>
+              <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: '24px', color: date.toDateString() === selectedDay.toDateString() ? '#fff6f5' : '#e2e2e2' }}>
                 {format(date, 'dd')}
               </span>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
 
       {/* Classes List */}
       <section style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {!usedMockData && displayAulas.length === 0 && (
+          <div style={{ ...cardStyle, color: 'rgba(232,188,185,0.72)', textAlign: 'center' }}>
+            <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.6' }}>
+              Nenhuma aula disponivel para {format(selectedDay, "dd 'de' MMMM", { locale: ptBR })}.
+            </p>
+          </div>
+        )}
+
         {displayAulas.map((aula) => (
             <div key={aula.id} style={{ ...cardStyle, borderColor: aula.status === 'booked' ? 'rgba(228,0,43,0.3)' : 'rgba(255,255,255,0.04)' }}>
               {/* Time & Duration Row */}
