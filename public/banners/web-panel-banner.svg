@@ -1,0 +1,18 @@
+<svg width="1600" height="420" viewBox="0 0 1600 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="420" fill="#0A0A0A"/>
+  <rect width="1600" height="420" fill="url(#paint0_linear_1_3)" fill-opacity="0.78"/>
+  <circle cx="1416" cy="57" r="180" fill="#E4002B" fill-opacity="0.24"/>
+  <circle cx="212" cy="374" r="196" fill="#FFFFFF" fill-opacity="0.04"/>
+  <rect x="180" y="80" width="1240" height="260" rx="28" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="4" stroke-dasharray="14 14"/>
+  <text x="220" y="160" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="26" letter-spacing="8">WEB PANEL BANNER</text>
+  <text x="220" y="232" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="72" font-weight="700">1600 x 420 px</text>
+  <text x="220" y="286" fill="#E8E8E8" font-family="Arial, sans-serif" font-size="28">Altura recomendada no layout: 220 px</text>
+  <text x="220" y="326" fill="#E8E8E8" font-family="Arial, sans-serif" font-size="24">Area segura central: 1240 x 260 px</text>
+  <defs>
+    <linearGradient id="paint0_linear_1_3" x1="0" y1="0" x2="1600" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#151515"/>
+      <stop offset="0.52" stop-color="#3B0A13"/>
+      <stop offset="1" stop-color="#12171A"/>
+    </linearGradient>
+  </defs>
+</svg>

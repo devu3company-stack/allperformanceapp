@@ -1,0 +1,19 @@
+<svg width="1080" height="560" viewBox="0 0 1080 560" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1080" height="560" fill="#0A0A0A"/>
+  <rect x="0" y="0" width="1080" height="560" fill="url(#paint0_linear_1_2)" fill-opacity="0.72"/>
+  <circle cx="937" cy="90" r="194" fill="#E4002B" fill-opacity="0.22"/>
+  <circle cx="129" cy="463" r="220" fill="#FFFFFF" fill-opacity="0.05"/>
+  <rect x="90" y="90" width="900" height="380" rx="28" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="4" stroke-dasharray="14 14"/>
+  <text x="120" y="196" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="28" letter-spacing="8">MOBILE APP BANNER</text>
+  <text x="120" y="270" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="74" font-weight="700">1080 x 560 px</text>
+  <text x="120" y="326" fill="#E8E8E8" font-family="Arial, sans-serif" font-size="30">Altura recomendada no layout: 180 px</text>
+  <text x="120" y="382" fill="#E8E8E8" font-family="Arial, sans-serif" font-size="26">Area segura central: 900 x 380 px</text>
+  <text x="120" y="438" fill="#E4002B" font-family="Arial, sans-serif" font-size="24" letter-spacing="4">SUBSTITUA ESTE ARQUIVO POR SUA ARTE FINAL</text>
+  <defs>
+    <linearGradient id="paint0_linear_1_2" x1="47.5" y1="56.5" x2="1034.5" y2="517" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1A1A1A"/>
+      <stop offset="0.54" stop-color="#3B0A13"/>
+      <stop offset="1" stop-color="#101418"/>
+    </linearGradient>
+  </defs>
+</svg>

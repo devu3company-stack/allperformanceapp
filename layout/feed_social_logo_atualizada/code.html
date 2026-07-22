@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Performance - Student Social Feed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;700&amp;family=Montserrat:ital,wght@0,400;0,700;0,800;0,900;1,800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(30, 32, 32, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .electric-glow {
+            text-shadow: 0 0 10px rgba(228, 0, 43, 0.4);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .custom-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .active-tab-glow {
+            filter: drop-shadow(0 0 8px rgba(228, 0, 43, 0.4));
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#ffb3af",
+                        "primary-container": "#e4002b",
+                        "on-primary-container": "#fff6f5",
+                        "surface": "#121414",
+                        "background": "#0a0a0a",
+                        "surface-container": "#1e2020",
+                        "surface-container-lowest": "#0c0f0f",
+                        "surface-container-high": "#282a2b",
+                        "on-background": "#e2e2e2",
+                        "on-surface": "#e2e2e2",
+                        "on-surface-variant": "#e8bcb9",
+                        "primary-fixed": "#ffdad7",
+                        "primary-fixed-dim": "#ffb3af",
+                        "vibrant-red": "#e4002b",
+                        "cyber-cyan": "#00E5FF"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Archivo Narrow"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Montserrat"],
+                        "headline-md": ["Montserrat"],
+                        "display-lg": ["Montserrat"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "800"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                        "display-lg": ["72px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "900"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md custom-scrollbar overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 border-b border-white/10 bg-background/80 backdrop-blur-md flex items-center justify-between px-4 h-16">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full border-2 border-vibrant-red p-0.5 overflow-hidden">
+<img alt="A close-up high-resolution portrait of a focused male athlete" class="w-full h-full object-cover rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJ-s7W9KidZCXmOYiJ5g2_kynwBkK5h8hNuzj5Tt5H0nlW1cvpC9ikECBJAS7kzC130ewL_fwWPfy32iFcZEX9yh8xFWT3hlVhzzb8Tgem2GoqkKK4gdVqgt6o6_UZ0BS8RK8Uwpdkxr19HDARHTUNzLS6rV_sjNkYieJ7JeMRR9Vl58PFcGU9scSFWh5dNeYRjnYsgx119YPPnw1kBZx7AT8YAF6aHsXtG0pWP_kw8e2A2mBr0IhMm93pNqxQb0dWJN2qkr6roeg"/>
+</div>
+<img alt="Performance Logo" class="h-10 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUo0UhmhO0qVxLnBDdKL0v7tnGxXSW6fXuI1TNIdYF0DKZrb3z1AFrM6FfEQTgAWAndkiHG2lgk1xv3U3Zv_ejnCtKbKL35L_bq0bH7zcX1HrqozIrTgMbtaCSlt1lsTgKqjewxJToqrV_tGsNhAoux1IVrqV976U-xs_wX-ENAnTZigrph4R7GP0GoDCwTsRs4gkXJY8SUphBe9J-P1EyDazzNiIkg2BJfSYAFdPKX-awq8CsEngNAPgg8YhiXEw4DBvU2_ctUjs"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-vibrant-red transition-colors duration-200">
+<span class="material-symbols-outlined text-[28px]">notifications</span>
+</button>
+</div>
+</header>
+<main class="pt-20 pb-32 max-w-lg mx-auto">
+<!-- Stories Section -->
+<section class="mb-8 overflow-x-auto custom-scrollbar flex gap-4 px-4">
+<!-- Add Story -->
+<div class="flex flex-col items-center gap-1 shrink-0">
+<div class="w-16 h-16 rounded-full bg-surface-container border border-dashed border-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-vibrant-red">add</span>
+</div>
+<span class="font-label-sm text-[10px] text-on-surface-variant">Your Story</span>
+</div>
+<!-- Trainer Stories -->
+<div class="flex flex-col items-center gap-1 shrink-0">
+<div class="w-16 h-16 rounded-full p-[2px] bg-gradient-to-tr from-vibrant-red via-primary to-vibrant-red ring-2 ring-background">
+<img alt="Female fitness coach performing a dynamic kettlebell swing" class="w-full h-full object-cover rounded-full border-2 border-background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoF04_oOuOrJ7Ps0YRpHg-efEu4fxxMV_ze2eE6RBrjWjyoUorvK58rveCLpDYecPz1yogjfT2bSjw-2P8J5Ms1UeymLbXV6Gzd1rZ5134nVNi5YjZ8WPysJlV2x2aJzqmiD8NkV9QaVcKWfpi9E_7rgqBq1YN8_4SKHVKTGN2unqJ1z7A2JauAJd4LHoQ6NK4AzbgYpR4qHMu1-IrMQPnh-Y4AnLmg7-YogpRACLbJxiYmV-a7MKDhDOFUQQmh2Lc4lz8zn0NPxM"/>
+</div>
+<span class="font-label-sm text-[10px] text-vibrant-red">Coach Jax</span>
+</div>
+<div class="flex flex-col items-center gap-1 shrink-0">
+<div class="w-16 h-16 rounded-full p-[2px] bg-gradient-to-tr from-vibrant-red via-primary to-vibrant-red ring-2 ring-background">
+<img alt="Male trainer demonstrating overhead press" class="w-full h-full object-cover rounded-full border-2 border-background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAm4yw1RUIyBBiJ6OmhGkhh9XIAMTUaEMyHL5fWx6hKBMZibOeaXbKZkj8yBewamgUBjTlrn9rMdn9mup8cppN4I_Mhsrim3AbheLw6r80VrLNy_r6nS6Kz40b1RbC8xBoWw08HJ4Hug5gdSeQGGrKTwdwHFfZH2GAbbxOsCoUHWKEuyRi5_FORGVJQODqeq-HMIwVSDdKwmZ42ph--_q3JVkvROMGfozXZYZg6t_07C6YtaWKtUrey4-F9jtx1kAt5MJ3H8hg83_k"/>
+</div>
+<span class="font-label-sm text-[10px] text-vibrant-red">Power Lab</span>
+</div>
+<div class="flex flex-col items-center gap-1 shrink-0 opacity-80">
+<div class="w-16 h-16 rounded-full p-[2px] bg-surface-container-high ring-2 ring-background">
+<img alt="Athletes finishing a sprint" class="w-full h-full object-cover rounded-full border-2 border-background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcDAr3JryfWPVViXTWM94Ud4aPQchTq37TRd0tmAKr-AB7gCbLN1F3hIhUGqbvweFFGcwIICpQCqO0vJPlSRXs-HiqxIFKOCMUyRqHn-L2_VlwElsz5C-z1IHI9ruteMLmygecu0zTJMCFCL3kct33ih1UTDsW6m9rCX9HfFICICJ2HwAZbG7UhjRxEDItUD-NjX47mEYBgI9p7cpWamOK_BaOzeA-ecWIcsUqvmM0Zrc4pwSCBmR62-xZA9hLQbh2jYI_sULjm_s"/>
+</div>
+<span class="font-label-sm text-[10px] text-on-surface-variant">HIIT Crew</span>
+</div>
+<div class="flex flex-col items-center gap-1 shrink-0 opacity-80">
+<div class="w-16 h-16 rounded-full p-[2px] bg-surface-container-high ring-2 ring-background">
+<img alt="Weightlifting belt and chalked hands" class="w-full h-full object-cover rounded-full border-2 border-background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBt-2ql2k3P1IUgznT8GOLDTda7vRpRWvWaO7ca8gCq1mCIkGOnB06EgKU8yB--V0cKEl5OawjAXodY0YAeDHxEoxLEsR0qNClx5SZopoTFXtrUCp-ctsw4WLj_eIGwEQpbK1Z9qoRxAku1wT_C3bcZZ6Q_zrOHn030PO67gszxGOU0RBPJccAGRp4ASL5xQj-toZoqwGHmUrXxeX8y11UjpXynaOznm6TQjUA0otJ2rcmSku0DLy2ao51Ynt_pMm0VWgLutgSOca8"/>
+</div>
+<span class="font-label-sm text-[10px] text-on-surface-variant">Elite Lift</span>
+</div>
+</section>
+<!-- Social Feed -->
+<div class="space-y-6 px-4">
+<!-- Feed Card 1 -->
+<article class="glass-card rounded-xl overflow-hidden">
+<div class="p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-vibrant-red">
+<img alt="Portrait of Sarah Jenkins" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKFr6TRaxkjQU5mGP0YGojeSwHbU4I1Ij9JYVEkuf4jnS8zv_P_9k4Xq8_5FRHnZ1L80A2J3roVj25sePwDXKmggU48yEFDLbSxy739LoQneIEB78j_hC-eZIci3W-JmbYRAVfDx9Ni8s7mM6Od4jhUtvYlN1ax6G6Fl8lgHaBBM8hFAo7uOlrmZDwH-IkI2jIm3J9kiz7A_Wxxrw8WWmrowsOQ15qt9mgsSZA5VKnzCXwmkG8mzxeYj6Y5iNqGI3_Uq1isl33ZAM"/>
+</div>
+<div>
+<p class="font-label-sm text-white">Sarah Jenkins</p>
+<p class="font-label-sm text-[10px] text-on-surface-variant">2 hours ago • Crossfit Elite</p>
+</div>
+</div>
+<button class="text-on-surface-variant">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="relative aspect-square">
+<img alt="Student performing heavy deadlift" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6CvUD22hPo1fejQr8dU-L-XXatyB1G_bf05AGQOFdu4AImKbE059LagJaSgrQEvnVZKQakidlb8XSL40rOLtlferC-3XE0OzmitYYUnShHXg7xF7Dg5tX-COefqpITsWrbY6j5NM2qKHxQ2276AER1EW66BEYcdWkBiRuCL7WckIw_BJfpi9dkEUjrTPM4hzf4zitX-9aKgDacHDYYuLE_K0cMr9b1RLdUPbNrK0BsFpWVJQYYhuPbW0pcqdEXbzDba2HL69dBgc"/>
+<div class="absolute top-4 right-4 bg-background/80 backdrop-blur-md px-3 py-1 rounded-full border border-vibrant-red/30">
+<p class="font-label-sm text-vibrant-red text-[10px] font-bold">NEW PR: 140KG</p>
+</div>
+</div>
+<div class="p-4">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-1.5 text-vibrant-red">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-label-sm">242</span>
+</button>
+<button class="flex items-center gap-1.5 text-on-surface-variant hover:text-white">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-label-sm">18</span>
+</button>
+<button class="text-on-surface-variant hover:text-white">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+<button class="text-on-surface-variant hover:text-vibrant-red">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+</div>
+<p class="text-body-md text-white mb-1"><span class="font-bold">sarah_j</span> Crushed a new personal best today! The energy at the morning session was insane. 🚀</p>
+<p class="text-label-sm text-primary">#Performance #DeadliftDay #GymRat</p>
+</div>
+</article>
+<!-- Feed Card 2 -->
+<article class="glass-card rounded-xl overflow-hidden">
+<div class="p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-cyber-cyan">
+<img alt="Marcus Thorne Boxing" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQwukaFNzRL55iHN1iBt_S56GZMJsyW8yuviC1ghklI94OqrMejEgjOiwAHqoOgXYDtIiBHNdTk-jFieGdG2kWXO7TFDvHXGGPx-mSazZl-p8IkxQbsV0a-1TjaVvyjZim-AXHGpkOnZ10eSbFU-GNRqfLvQZy3M2tNDfbrtxc2Ape1ptoPlXlCWH2BXmf4vavz2nZsk8N2-bf6Dhj448QK2n5fuWvwTKOc74dUXkC5ecMtpx3-wZwjzt-19X5tPKhE-r4wYPfCbw"/>
+</div>
+<div>
+<p class="font-label-sm text-white">Marcus Thorne</p>
+<p class="font-label-sm text-[10px] text-on-surface-variant">5 hours ago • Power Lab</p>
+</div>
+</div>
+<button class="text-on-surface-variant">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="relative aspect-video">
+<img alt="Modern fitness studio" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFGG4Gc8IeIjZv_mbNXRhZPJNHH1FXtfTAI8NvHVDTp0rD2_2G9t9PS4zLmFIyds6koPYEh7tWF-ilaqWX3Fb1bSiHsTqWF_OMXXLdUzHPTVI8l6C8QAnf1MH2mIi4oVAyXEQpjKUgSltfwJ68rUfQEcb0pbQPbUOHOWuE0ivXkPZGFR1qrjX31aMynEaQVS6zOzL07UtfOU59nszTEJi-yTKngi2luJGmBEv_YRcAOPYI1PbmdPqc9sKBOwMB6fys3fIFiPjItKU"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-12 h-12 rounded-full bg-vibrant-red/20 backdrop-blur-md border border-vibrant-red flex items-center justify-center group cursor-pointer hover:scale-110 transition-transform shadow-[0_0_15px_rgba(228,0,43,0.5)]">
+<span class="material-symbols-outlined text-vibrant-red text-3xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+</div>
+<div class="p-4">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-1.5 text-on-surface-variant hover:text-vibrant-red">
+<span class="material-symbols-outlined">favorite</span>
+<span class="font-label-sm">89</span>
+</button>
+<button class="flex items-center gap-1.5 text-on-surface-variant hover:text-white">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-label-sm">5</span>
+</button>
+</div>
+<button class="text-on-surface-variant hover:text-vibrant-red">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+</div>
+<p class="text-body-md text-white mb-1"><span class="font-bold">m_thorne</span> Morning HIIT session was a killer. If you aren't sweating, you aren't working!</p>
+</div>
+</article>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-xl border-t border-white/5 rounded-t-[32px] px-6 h-20 flex items-center justify-between shadow-2xl">
+<!-- Feed Tab -->
+<a class="flex flex-col items-center justify-center text-vibrant-red active-tab-glow" href="#">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">dynamic_feed</span>
+<span class="font-label-sm text-[10px] mt-1">Feed</span>
+</a>
+<!-- Schedule Tab -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined text-[28px]">calendar_today</span>
+<span class="font-label-sm text-[10px] mt-1">Schedule</span>
+</a>
+<!-- Check-in Tab (Highlighted Center) -->
+<div class="relative -top-6">
+<button class="w-16 h-16 rounded-full bg-vibrant-red flex items-center justify-center text-white shadow-[0_0_25px_rgba(228,0,43,0.5)] active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined text-3xl font-bold">qr_code_scanner</span>
+</button>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 font-label-sm text-[10px] text-vibrant-red whitespace-nowrap">Check-in</span>
+</div>
+<!-- Profile Tab -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined text-[28px]">person</span>
+<span class="font-label-sm text-[10px] mt-1">Profile</span>
+</a>
+<!-- Extra menu/Stats Tab -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined text-[28px]">monitoring</span>
+<span class="font-label-sm text-[10px] mt-1">Stats</span>
+</a>
+</nav>
+<script>
+    // Micro-interactions for likes and buttons
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            if(this.querySelector('.material-symbols-outlined')) {
+                const icon = this.querySelector('.material-symbols-outlined');
+                if(icon.innerText === 'favorite') {
+                    const isFilled = icon.style.fontVariationSettings.includes("'FILL' 1");
+                    icon.style.fontVariationSettings = isFilled ? "'FILL' 0" : "'FILL' 1";
+                    this.classList.toggle('text-vibrant-red');
+                    this.classList.toggle('text-on-surface-variant');
+                    
+                    // Small animation pop
+                    this.classList.add('scale-125');
+                    setTimeout(() => this.classList.remove('scale-125'), 200);
+                }
+            }
+        });
+    });
+
+    // Simple scroll reveal for cards
+    const observerOptions = {
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('opacity-100', 'translate-y-0');
+                entry.target.classList.remove('opacity-0', 'translate-y-10');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('article').forEach(card => {
+        card.classList.add('transition-all', 'duration-700', 'ease-out', 'opacity-0', 'translate-y-10');
+        observer.observe(card);
+    });
+</script>
+</body></html>

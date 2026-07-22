@@ -1,0 +1,375 @@
+// ============================================================
+// ALL PERFORMANCE — Schema Prisma
+// Sistema de gestão de academia (multi-tenant)
+// Financeiro sincronizado via API do Next Fit
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ------------------------------------------------------------
+// TENANT / ACADEMIA
+// ------------------------------------------------------------
+
+model Academia {
+  id        String   @id @default(cuid())
+  nome      String
+  slug      String   @unique
+  logoUrl   String?
+  corPrimaria String @default("#E4002B") // vermelho ALL Performance
+
+  // Credenciais de integração com o Next Fit (por academia)
+  nextFitApiKey     String?
+  nextFitAcademiaId String?
+  nextFitSyncAt     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  usuarios   Usuario[]
+  alunos     Aluno[]
+  planos     Plano[]
+  turmas     Turma[]
+  aulas      Aula[]
+  posts      Post[]
+  professores Professor[]
+
+  @@map("academias")
+}
+
+// ------------------------------------------------------------
+// USUÁRIOS (gestor / equipe administrativa)
+// ------------------------------------------------------------
+
+enum PapelUsuario {
+  ADMIN
+  GESTOR
+  RECEPCAO
+  PROFESSOR
+}
+
+model Usuario {
+  id         String       @id @default(cuid())
+  academiaId String
+  academia   Academia     @relation(fields: [academiaId], references: [id])
+
+  nome       String
+  email      String       @unique
+  senhaHash  String
+  papel      PapelUsuario @default(RECEPCAO)
+  ativo      Boolean      @default(true)
+
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  postsAutor Post[]
+
+  @@index([academiaId])
+  @@map("usuarios")
+}
+
+// ------------------------------------------------------------
+// PROFESSORES
+// ------------------------------------------------------------
+
+model Professor {
+  id         String   @id @default(cuid())
+  academiaId String
+  academia   Academia @relation(fields: [academiaId], references: [id])
+
+  nome       String
+  email      String?
+  telefone   String?
+  fotoUrl    String?
+  especialidades String[] // ex: ["Musculação", "Funcional", "Cross"]
+  ativo      Boolean  @default(true)
+
+  turmas     Turma[]
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([academiaId])
+  @@map("professores")
+}
+
+// ------------------------------------------------------------
+// ALUNOS
+// ------------------------------------------------------------
+
+enum StatusAluno {
+  ATIVO
+  INATIVO
+  SUSPENSO
+  INADIMPLENTE
+}
+
+model Aluno {
+  id         String      @id @default(cuid())
+  academiaId String
+  academia   Academia    @relation(fields: [academiaId], references: [id])
+
+  nome       String
+  cpf        String      // chave de vínculo com o Next Fit
+  email      String?
+  telefone   String?
+  fotoUrl    String?
+  dataNascimento DateTime?
+  status     StatusAluno @default(ATIVO)
+
+  // ID do aluno no sistema Next Fit (para sincronização)
+  nextFitClienteId String?
+
+  senhaHash  String?     // login no app do aluno
+  ativoNoApp Boolean     @default(true)
+
+  matriculas Matricula[]
+  checkIns   CheckIn[]
+  posts      Post[]
+  likes      PostLike[]
+  comentarios PostComment[]
+  agendamentos Agendamento[]
+
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@unique([academiaId, cpf])
+  @@index([academiaId, status])
+  @@map("alunos")
+}
+
+// ------------------------------------------------------------
+// PLANOS E MATRÍCULAS
+// ------------------------------------------------------------
+
+model Plano {
+  id          String   @id @default(cuid())
+  academiaId  String
+  academia    Academia @relation(fields: [academiaId], references: [id])
+
+  nome        String   // ex: "Mensal", "Trimestral", "Anual"
+  descricao   String?
+  valor       Decimal  @db.Decimal(10, 2)
+  duracaoDias Int      // 30, 90, 365...
+  ativo       Boolean  @default(true)
+
+  // ID do plano correspondente no Next Fit
+  nextFitPlanoId String?
+
+  matriculas  Matricula[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([academiaId])
+  @@map("planos")
+}
+
+enum StatusMatricula {
+  ATIVA
+  VENCIDA
+  CANCELADA
+  PENDENTE
+}
+
+enum StatusPagamento {
+  PAGO
+  PENDENTE
+  ATRASADO
+  CANCELADO
+}
+
+model Matricula {
+  id         String          @id @default(cuid())
+  alunoId    String
+  aluno      Aluno           @relation(fields: [alunoId], references: [id])
+  planoId    String
+  plano      Plano           @relation(fields: [planoId], references: [id])
+
+  dataInicio DateTime
+  dataFim    DateTime
+  status     StatusMatricula @default(ATIVA)
+
+  // --- dados financeiros sincronizados via API do Next Fit ---
+  statusPagamento     StatusPagamento @default(PENDENTE)
+  ultimoPagamentoEm   DateTime?
+  proximoVencimentoEm DateTime?
+  nextFitContratoId   String?
+  syncAt              DateTime?
+  // -------------------------------------------------------------
+
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  @@index([alunoId])
+  @@index([statusPagamento])
+  @@map("matriculas")
+}
+
+// ------------------------------------------------------------
+// AGENDA / TURMAS / AULAS
+// ------------------------------------------------------------
+
+model Turma {
+  id          String   @id @default(cuid())
+  academiaId  String
+  academia    Academia @relation(fields: [academiaId], references: [id])
+  professorId String?
+  professor   Professor? @relation(fields: [professorId], references: [id])
+
+  nome        String   // ex: "Funcional Manhã"
+  modalidade  String   // ex: "Musculação", "Cross", "Pilates"
+  capacidade  Int      @default(20)
+  diaSemana   Int      // 0=domingo ... 6=sábado
+  horaInicio  String   // "07:00"
+  horaFim     String   // "08:00"
+  ativa       Boolean  @default(true)
+
+  aulas       Aula[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([academiaId])
+  @@map("turmas")
+}
+
+model Aula {
+  id         String   @id @default(cuid())
+  academiaId String
+  academia   Academia @relation(fields: [academiaId], references: [id])
+  turmaId    String
+  turma      Turma    @relation(fields: [turmaId], references: [id])
+
+  data       DateTime // data específica da ocorrência da aula
+  cancelada  Boolean  @default(false)
+
+  agendamentos Agendamento[]
+  checkIns     CheckIn[]
+
+  createdAt  DateTime @default(now())
+
+  @@index([academiaId, data])
+  @@map("aulas")
+}
+
+model Agendamento {
+  id        String   @id @default(cuid())
+  alunoId   String
+  aluno     Aluno    @relation(fields: [alunoId], references: [id])
+  aulaId    String
+  aula      Aula     @relation(fields: [aulaId], references: [id])
+
+  presente  Boolean  @default(false)
+  cancelado Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@unique([alunoId, aulaId])
+  @@map("agendamentos")
+}
+
+model CheckIn {
+  id        String   @id @default(cuid())
+  alunoId   String
+  aluno     Aluno    @relation(fields: [alunoId], references: [id])
+  aulaId    String?
+  aula      Aula?    @relation(fields: [aulaId], references: [id])
+
+  metodo    String   @default("qrcode") // qrcode | manual | catraca (futuro)
+  criadoEm  DateTime @default(now())
+
+  @@index([alunoId])
+  @@map("check_ins")
+}
+
+// ------------------------------------------------------------
+// FEED SOCIAL
+// ------------------------------------------------------------
+
+enum TipoPost {
+  NOVIDADE
+  AVISO
+  PROMOCAO
+  POST_ALUNO
+}
+
+enum StatusPost {
+  APROVADO
+  PENDENTE
+  REJEITADO
+}
+
+model Post {
+  id          String     @id @default(cuid())
+  academiaId  String
+  academia    Academia   @relation(fields: [academiaId], references: [id])
+
+  // autor pode ser um usuário (admin/gestor) OU um aluno
+  autorUsuarioId String?
+  autorUsuario   Usuario? @relation(fields: [autorUsuarioId], references: [id])
+  autorAlunoId   String?
+  autorAluno     Aluno?   @relation(fields: [autorAlunoId], references: [id])
+
+  tipo        TipoPost
+  legenda     String?
+  imagemUrl   String
+
+  status      StatusPost @default(APROVADO) // posts de admin entram aprovados; de aluno depende de config
+  denunciado  Boolean    @default(false)
+
+  likes       PostLike[]
+  comentarios PostComment[]
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([academiaId, status, createdAt])
+  @@map("posts")
+}
+
+model PostLike {
+  id      String @id @default(cuid())
+  postId  String
+  post    Post   @relation(fields: [postId], references: [id])
+  alunoId String
+  aluno   Aluno  @relation(fields: [alunoId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([postId, alunoId])
+  @@map("post_likes")
+}
+
+model PostComment {
+  id      String @id @default(cuid())
+  postId  String
+  post    Post   @relation(fields: [postId], references: [id])
+  alunoId String
+  aluno   Aluno  @relation(fields: [alunoId], references: [id])
+
+  texto   String
+
+  createdAt DateTime @default(now())
+
+  @@map("post_comments")
+}
+
+// ------------------------------------------------------------
+// CONFIGURAÇÃO DA ACADEMIA (feature flags)
+// ------------------------------------------------------------
+
+model ConfiguracaoAcademia {
+  academiaId String  @id
+  feedModeracaoAtiva Boolean @default(true) // posts de aluno precisam de aprovação?
+  permiteComentarios Boolean @default(true)
+  bannerMobileUrl    String?
+  bannerWebUrl       String?
+
+  @@map("configuracoes_academia")
+}

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PERFORMANCE | Manager Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&amp;family=Archivo+Narrow:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+        .electric-glow {
+            box-shadow: 0 0 15px rgba(228, 0, 43, 0.2);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f2f2f2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d1d1d1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e4002b;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#e4002b",
+                        "primary-fixed": "#ffdad7",
+                        "primary-container": "#e4002b",
+                        "on-primary-container": "#fff6f5",
+                        "surface": "#121414",
+                        "background": "#F2F2F2",
+                        "sidebar-bg": "#0A0A0A",
+                        "on-background": "#121414",
+                        "on-surface-variant": "#474746",
+                        "surface-container": "#ffffff",
+                        "surface-container-high": "#f9f9f9",
+                        "surface-container-highest": "#e5e2e1",
+                        "velocity-red": "#E4002B",
+                        "cyber-cyan": "#0078D4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "40px",
+                        "xl": "64px",
+                        "base": "4px",
+                        "margin-desktop": "48px",
+                        "xs": "8px",
+                        "md": "24px",
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "sm": "16px",
+                        "stack-lg": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Montserrat"],
+                        "display-lg": ["Montserrat"],
+                        "body-lg": ["Archivo Narrow"],
+                        "body-md": ["Archivo Narrow"],
+                        "headline-md": ["Montserrat"],
+                        "label-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["40px", {"lineHeight": "1.2", "fontWeight": "800"}],
+                        "display-lg": ["72px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "900"}],
+                        "body-lg": ["18px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- Navigation Drawer (Sidebar) -->
+<aside class="h-screen w-[260px] fixed left-0 top-0 bg-sidebar-bg flex flex-col py-8 px-6 gap-2 z-50 text-white">
+<!-- Brand Header with Updated Logo -->
+<div class="mb-10 px-2">
+<div class="relative w-full aspect-square max-w-[140px] mx-auto bg-white rounded-full p-1 shadow-[0_0_20px_rgba(255,255,255,0.05)]">
+<img alt="Performance Logo" class="w-full h-full object-contain rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUo0UhmhO0qVxLnBDdKL0v7tnGxXSW6fXuI1TNIdYF0DKZrb3z1AFrM6FfEQTgAWAndkiHG2lgk1xv3U3Zv_ejnCtKbKL35L_bq0bH7zcX1HrqozIrTgMbtaCSlt1lsTgKqjewxJToqrV_tGsNhAoux1IVrqV976U-xs_wX-ENAnTZigrph4R7GP0GoDCwTsRs4gkXJY8SUphBe9J-P1EyDazzNiIkg2BJfSYAFdPKX-awq8CsEngNAPgg8YhiXEw4DBvU2_ctUjs"/>
+</div>
+</div>
+<!-- Admin Profile -->
+<div class="flex items-center gap-3 mb-8">
+<div class="w-10 h-10 rounded-full border border-velocity-red/20 overflow-hidden">
+<img alt="A professional headshot of a gym manager" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQCZ0u0tusMUHoQ5Uy0GPSCKic1L8K7RjAWV9iF5V_uF2Ah6buR2dauXbmuE4A7QcB2o85BoE0uoJ5L0KW8-U9WqRmFFmAv3dko6kH96c3Vj9G7B7YNWP_seN9yH8eUjdfiDwg_NkCP_F0CGWWlpLM5u80J1Z8qoDJBOM2_uFDH59EGAJCnyKDc9n_kar2uwdSV9fvdjxahZ-Ty_Ld6PNt8gu-QXALe2ktY8ilQi3VrXjBSCmOC5E53WpFkINZICktnrTPPjLjCCE"/>
+</div>
+<div class="flex flex-col">
+<span class="font-bold text-sm">Gym Admin</span>
+<span class="text-[10px] uppercase tracking-widest text-white/50 font-label-sm">Lead Strategist</span>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 py-3 px-4 rounded-lg transition-all bg-velocity-red text-white font-bold" href="#">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span class="text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined text-xl">group</span>
+<span class="text-sm">Students</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined text-xl">payments</span>
+<span class="text-sm">Plans</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined text-xl">fitness_center</span>
+<span class="text-sm">Classes</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined text-xl">account_balance_wallet</span>
+<span class="text-sm">Financial</span>
+</a>
+</nav>
+<!-- Bottom Link -->
+<div class="mt-auto pt-4 border-t border-white/10">
+<a class="flex items-center gap-3 py-3 px-4 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined text-xl">settings</span>
+<span class="text-sm">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-[260px] min-h-screen">
+<!-- Header / Top Bar Section -->
+<header class="bg-sidebar-bg text-white px-xl py-10 flex justify-between items-center">
+<div>
+<h2 class="font-headline-lg text-headline-lg">Overview</h2>
+<p class="text-white/60 font-body-md">Performance metrics for your athletic center.</p>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex flex-col items-end">
+<div class="flex items-center gap-2 text-velocity-red">
+<span class="material-symbols-outlined text-sm animate-spin-slow" style="font-variation-settings: 'FILL' 1;">sync</span>
+<span class="font-label-sm text-label-sm">Synced with Next Fit</span>
+</div>
+<span class="text-[10px] text-white/40 font-label-sm uppercase tracking-tighter">Last sync: Today, 14:45</span>
+</div>
+<button class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-velocity-red transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</header>
+<div class="p-xl max-w-[1400px] mx-auto">
+<!-- Stats Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-xl">
+<!-- Total Students -->
+<div class="glass-card p-8 rounded-xl relative overflow-hidden group">
+<div class="flex justify-between items-start mb-6">
+<div class="p-4 bg-velocity-red/10 rounded-xl">
+<span class="material-symbols-outlined text-velocity-red">group</span>
+</div>
+<span class="text-velocity-red font-bold text-sm bg-velocity-red/5 px-3 py-1 rounded-full">+12%</span>
+</div>
+<h3 class="text-on-surface-variant font-label-sm uppercase tracking-[0.15em] mb-2">Total Students</h3>
+<div class="text-on-background font-headline-lg">1,284</div>
+<div class="mt-6 h-1.5 w-full bg-black/5 rounded-full overflow-hidden">
+<div class="h-full bg-velocity-red w-3/4 electric-glow"></div>
+</div>
+</div>
+<!-- Monthly Revenue -->
+<div class="glass-card p-8 rounded-xl relative overflow-hidden group">
+<div class="flex justify-between items-start mb-6">
+<div class="p-4 bg-black/5 rounded-xl">
+<span class="material-symbols-outlined text-on-background">payments</span>
+</div>
+<span class="text-on-background font-bold text-sm bg-black/5 px-3 py-1 rounded-full">+8.4%</span>
+</div>
+<h3 class="text-on-surface-variant font-label-sm uppercase tracking-[0.15em] mb-2">Monthly Revenue</h3>
+<div class="text-on-background font-headline-lg">$42,920</div>
+<div class="mt-6 h-1.5 w-full bg-black/5 rounded-full overflow-hidden">
+<div class="h-full bg-on-background w-2/3"></div>
+</div>
+</div>
+<!-- Today's Check-ins -->
+<div class="glass-card p-8 rounded-xl relative overflow-hidden group">
+<div class="flex justify-between items-start mb-6">
+<div class="p-4 bg-velocity-red/10 rounded-xl">
+<span class="material-symbols-outlined text-velocity-red">qr_code_scanner</span>
+</div>
+<span class="text-white font-bold text-xs bg-velocity-red px-3 py-1 rounded-full uppercase tracking-widest animate-pulse">Live</span>
+</div>
+<h3 class="text-on-surface-variant font-label-sm uppercase tracking-[0.15em] mb-2">Today's Check-ins</h3>
+<div class="text-on-background font-headline-lg">156</div>
+<div class="mt-6 flex items-center gap-3">
+<div class="flex -space-x-3">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-gray-200 overflow-hidden">
+<img alt="Athlete portrait" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAU4Rwg4M44yWSgrIb1U7gHsKgDI8luNwBeG28Ruee0CVMZ8e2SSdr4cKzN4gzoGktzl-dKlZGH1SOrbTAmpTiTmCc7eNRioNNCptY71hmJC0dv9uDFNjEUAY25Oo9pbufRrlq2snqgoe1w7jaK3W0QaJpn3JcqSUTCNBGHwFhnO-7ricRjpuMjAAE0n2l5gLdUmD9CTo2mPf02is9jqfSmuYx7vUYrRJHJdB0bTRL_15ihnuBHVFxquyqnbdGGkG08ZWC6Xf_-A5k"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-gray-200 overflow-hidden">
+<img alt="Athlete portrait" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmiXNvnbRCSGlngMT0-0QZFMLlXgzX0Or05y3aLH4L8-bi8UQipxb6l5brXraBV6rg9MyUeaU_fPU-dN3FjlnKeJVGmLkHJEJ4IeZ3aLB0lIai6y0j5myMkgrDsFLbqldruNTAgU-FYvmhIu3Cpxoz-gyCoDuy9evP65gwDm8Db_c6IH-cfL85jDMjsAnsWD9YHOPZuAxQfIxSTv0AoRGe2fxMbqQK51CKOjwmrn6ewMgiiv0rf-Ds4Ij4hQErkfbGbY1-wJNznJI"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-gray-200 overflow-hidden">
+<img alt="Athlete portrait" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3MBiTELJw2WWkzbVQATO_R2RsB8wHbF6fqIdKQG-9Z_BV6wpOomWN0mBVttY9j1DNs6pvzhi0prNJ4ZJJARlU3jxqUbZP65BsJezJYW8FPhJHl6aa8IYdzJVBNh-DhlLG0-5r6aB9fTb7uiCjwsjgNylbADSV3s8dyGkkX0eiAkWNa2sKXijFYmgiXXEFe81BNHmXSHTEV3PSWiUnbxbYuY5UeuEDHbgLKQu9XYSh4V_g31PnjAwpNvUrjoSi0HBh98WHzkNPE44"/>
+</div>
+</div>
+<span class="text-xs text-on-surface-variant font-bold">+12 more active</span>
+</div>
+</div>
+</section>
+<!-- Bento Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Trend Chart -->
+<div class="lg:col-span-2 glass-card rounded-xl p-8">
+<div class="flex justify-between items-center mb-10">
+<h3 class="font-headline-md text-on-background">Performance Trend</h3>
+<div class="flex bg-black/5 p-1 rounded-lg">
+<button class="px-4 py-1.5 text-xs font-bold rounded-md bg-white shadow-sm text-velocity-red">7D</button>
+<button class="px-4 py-1.5 text-xs font-bold rounded-md text-on-surface-variant hover:text-on-background">30D</button>
+<button class="px-4 py-1.5 text-xs font-bold rounded-md text-on-surface-variant hover:text-on-background">6M</button>
+</div>
+</div>
+<!-- Chart -->
+<div class="h-72 relative flex items-end justify-between gap-3">
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none">
+<div class="border-t border-black/5 w-full h-0"></div>
+<div class="border-t border-black/5 w-full h-0"></div>
+<div class="border-t border-black/5 w-full h-0"></div>
+<div class="border-t border-black/5 w-full h-0"></div>
+</div>
+<!-- Bars -->
+<div class="flex-1 bg-velocity-red/10 hover:bg-velocity-red/20 transition-all h-24 rounded-t-lg relative group cursor-pointer"></div>
+<div class="flex-1 bg-velocity-red/10 hover:bg-velocity-red/20 transition-all h-32 rounded-t-lg relative group cursor-pointer"></div>
+<div class="flex-1 bg-velocity-red/10 hover:bg-velocity-red/20 transition-all h-48 rounded-t-lg relative group cursor-pointer"></div>
+<div class="flex-1 bg-velocity-red/20 hover:bg-velocity-red/30 transition-all h-40 rounded-t-lg relative group cursor-pointer"></div>
+<div class="flex-1 bg-velocity-red/10 hover:bg-velocity-red/20 transition-all h-56 rounded-t-lg relative group cursor-pointer"></div>
+<div class="flex-1 bg-velocity-red electric-glow h-64 rounded-t-lg relative group cursor-pointer">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-on-background text-white text-[10px] font-bold py-1.5 px-2.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">34k</div>
+</div>
+<div class="flex-1 bg-velocity-red/10 hover:bg-velocity-red/20 transition-all h-44 rounded-t-lg relative group cursor-pointer"></div>
+</div>
+<div class="flex justify-between mt-6 text-[10px] font-label-sm text-on-surface-variant uppercase tracking-widest px-1">
+<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+</div>
+</div>
+<!-- Recent Registrations -->
+<div class="glass-card rounded-xl flex flex-col overflow-hidden">
+<div class="p-6 border-b border-black/5 flex justify-between items-center bg-white">
+<h3 class="font-bold text-on-background">Recent Registrations</h3>
+<button class="text-velocity-red text-xs font-bold hover:underline">View All</button>
+</div>
+<div class="flex-1 overflow-y-auto max-h-[460px] p-2">
+<div class="space-y-1">
+<!-- Student Item -->
+<div class="flex items-center gap-4 p-4 rounded-xl hover:bg-black/5 transition-all cursor-pointer group">
+<div class="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden">
+<img alt="Student" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZG-RwNSS0-tsS15a9EjaB3JdpbagaKTouGs0Nq1GCepyKvD2lN93kyd9ChJpNLdc-3ucdsFoINebkVLE_rQTnmg8Q4XHufnWvu6DQ_tNLt1MtTUKyuBbcZKQM-nTiwkk3jlTfy7ksgFZ4DODyVUI7vRPiC5C7RvCFffAiibmeULzJeX75TJh6jsp6vymRzHKi448ZuUjKV75PpDDNnUPVbKD__u0UskGWVqUStkgPleBGxOcM6j8xn6Z_b81Te7MFvK6fIn-Ntmg"/>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-on-background">Marcus Sterling</p>
+<p class="text-xs text-on-surface-variant font-label-sm">Elite Performance</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-velocity-red font-bold uppercase">Active</p>
+<p class="text-[10px] text-on-surface-variant font-label-sm">2h ago</p>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-xl hover:bg-black/5 transition-all cursor-pointer group">
+<div class="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden">
+<img alt="Student" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmMa7fagVKTr8-Rtr1gETCS9hBdKqIcnPfOu2RaWDydtOshL8513QKjCtiaWXaOmFURpw0Sae-mP-RHsLPhvZeZVisglkFK-tUg1W3tI5dBMkbYlEGHjy3zPcoco_DQ8tjwv697FbFtTIqGptPhNkyh89kaosIEY661lNAZ-YblbdSSh725ze-aihd6R7OC3QolSZF0NGcfUJaMxL0Bw9AQ1OvMKv1kPYQwTzPFFCUTfXGFk0Xs7uITItbhMQ21cQYxdCwIc9pafo"/>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-on-background">Elena Rodriguez</p>
+<p class="text-xs text-on-surface-variant font-label-sm">Strength &amp; Tone</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-velocity-red font-bold uppercase">Active</p>
+<p class="text-[10px] text-on-surface-variant font-label-sm">5h ago</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Student Ledger -->
+<section class="mt-xl">
+<div class="glass-card rounded-xl overflow-hidden">
+<div class="px-8 py-8 flex justify-between items-center border-b border-black/5 bg-white">
+<h3 class="font-headline-md text-on-background">Detailed Student Ledger</h3>
+<div class="flex items-center gap-4">
+<div class="relative">
+<input class="bg-black/5 border-none rounded-xl py-3 pl-12 pr-6 text-sm font-body-md text-on-background focus:ring-2 focus:ring-velocity-red transition-all w-64" placeholder="Search students..." type="text"/>
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+</div>
+<button class="bg-velocity-red text-white font-bold py-3 px-6 rounded-xl flex items-center gap-2 text-sm transition-transform active:scale-95 shadow-lg shadow-velocity-red/20">
+<span class="material-symbols-outlined">add</span>
+<span>Add New Student</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-black/5 text-on-surface-variant uppercase text-[10px] font-bold tracking-widest">
+<tr>
+<th class="px-8 py-5">Student Name</th>
+<th class="px-6 py-5">Active Plan</th>
+<th class="px-6 py-5">Last Check-in</th>
+<th class="px-6 py-5">Billing Status</th>
+<th class="px-8 py-5 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-black/5">
+<tr class="hover:bg-black/[0.01] transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-velocity-red/10 flex items-center justify-center font-bold text-velocity-red text-sm">AM</div>
+<div>
+<p class="text-sm font-bold text-on-background">Alex Morgan</p>
+<p class="text-[10px] text-on-surface-variant font-label-sm">alex.m@example.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm text-on-background font-medium">Powerlifting Max</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm text-on-surface-variant">Today, 08:30 AM</span>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-velocity-red/10 text-velocity-red text-[10px] font-black uppercase tracking-widest">
+<span class="w-1.5 h-1.5 rounded-full bg-velocity-red"></span> PAID
+                                        </span>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="p-2 hover:bg-black/5 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">more_horiz</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-black/[0.01] transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-black/5 flex items-center justify-center font-bold text-on-background text-sm">DW</div>
+<div>
+<p class="text-sm font-bold text-on-background">David Wright</p>
+<p class="text-[10px] text-on-surface-variant font-label-sm">d.wright@example.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm text-on-background font-medium">Cardio Specialized</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm text-on-surface-variant">Yesterday, 18:20 PM</span>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-on-background/10 text-on-background text-[10px] font-black uppercase tracking-widest">
+<span class="w-1.5 h-1.5 rounded-full bg-on-background"></span> OVERDUE
+                                        </span>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="p-2 hover:bg-black/5 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">more_horiz</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-8 py-6 bg-white border-t border-black/5 flex justify-between items-center text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.2em]">
+<span>Showing 1-10 of 1,284 students</span>
+<div class="flex gap-2">
+<button class="w-10 h-10 flex items-center justify-center bg-black/5 rounded-lg hover:bg-black/10 transition-all">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center bg-velocity-red text-white rounded-lg shadow-lg shadow-velocity-red/20 font-black">1</button>
+<button class="w-10 h-10 flex items-center justify-center bg-black/5 rounded-lg hover:bg-black/10 transition-all">2</button>
+<button class="w-10 h-10 flex items-center justify-center bg-black/5 rounded-lg hover:bg-black/10 transition-all">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="mt-xl mb-12 flex justify-center">
+<div class="inline-flex items-center gap-4 text-[10px] text-on-surface-variant font-bold uppercase tracking-[0.3em]">
+<span>Performance Management System</span>
+<span class="w-1 h-1 rounded-full bg-black/20"></span>
+<span>Version 4.2.0-Apex</span>
+<span class="w-1 h-1 rounded-full bg-black/20"></span>
+<span class="text-velocity-red">Secure Connection Active</span>
+</div>
+</footer>
+</div>
+</main>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const syncIcon = document.querySelector('.material-symbols-outlined[style*="sync"]');
+            if (syncIcon) {
+                let deg = 0;
+                setInterval(() => {
+                    deg = (deg + 1) % 360;
+                    syncIcon.style.transform = `rotate(${deg}deg)`;
+                }, 40);
+            }
+
+            const navLinks = document.querySelectorAll('nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('mousedown', () => {
+                    link.classList.add('scale-95');
+                    setTimeout(() => link.classList.remove('scale-95'), 150);
+                });
+            });
+        });
+    </script>
+</body></html>
