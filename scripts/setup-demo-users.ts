@@ -146,6 +146,7 @@ async function main() {
           email: demoUser.email,
           ativoNoApp: true,
           status: 'ATIVO',
+          unidadeTreino: 'ZERAO',
         },
         create: {
           academiaId: academia.id,
@@ -154,6 +155,7 @@ async function main() {
           email: demoUser.email,
           ativoNoApp: true,
           status: 'ATIVO',
+          unidadeTreino: 'ZERAO',
         },
       })
     }

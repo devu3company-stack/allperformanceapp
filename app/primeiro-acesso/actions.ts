@@ -4,6 +4,8 @@ import prisma from '@/lib/prisma'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { findAlunoByCpf, normalizeEmail, parseSpreadsheetDate } from '@/lib/alunos'
 
+const allowedUnits = new Set(['ZERAO', 'BOSQUE'])
+
 export type FirstAccessResult = {
   error?: string
   success?: string
@@ -13,11 +15,12 @@ export async function completeFirstAccess(formData: FormData): Promise<FirstAcce
   const email = normalizeEmail(String(formData.get('email') ?? ''))
   const cpf = String(formData.get('cpf') ?? '')
   const dataNascimento = parseSpreadsheetDate(String(formData.get('dataNascimento') ?? ''))
+  const unidadeTreino = String(formData.get('unidadeTreino') ?? '').trim().toUpperCase()
   const password = String(formData.get('password') ?? '')
   const confirmPassword = String(formData.get('confirmPassword') ?? '')
 
-  if (!email || !cpf || !dataNascimento) {
-    return { error: 'Preencha e-mail, CPF e data de nascimento.' }
+  if (!email || !cpf || !dataNascimento || !allowedUnits.has(unidadeTreino)) {
+    return { error: 'Preencha e-mail, CPF, data de nascimento e selecione sua unidade.' }
   }
 
   if (password.length < 8) {
@@ -43,6 +46,7 @@ export async function completeFirstAccess(formData: FormData): Promise<FirstAcce
     data: {
       email,
       dataNascimento,
+      unidadeTreino: unidadeTreino as 'ZERAO' | 'BOSQUE',
     },
   })
 

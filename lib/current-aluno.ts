@@ -24,6 +24,7 @@ export async function getCurrentAlunoProfile() {
       dataNascimento: true,
       fotoUrl: true,
       status: true,
+      unidadeTreino: true,
     },
   })
 }

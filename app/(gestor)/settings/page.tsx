@@ -1,9 +1,12 @@
-import { getBannerSettings } from '@/lib/banner-settings'
+import { getBannerSettings, getLogoSettings } from '@/lib/banner-settings'
 import { getDefaultAcademia } from '@/lib/academia'
-import { SettingsBannerForm, SettingsNextFitForm } from './form'
+import { SettingsBannerForm, SettingsLogoForm, SettingsNextFitForm } from './form'
 
 export default async function SettingsPage() {
-  const banners = await getBannerSettings()
+  const [banners, logos] = await Promise.all([
+    getBannerSettings(),
+    getLogoSettings(),
+  ])
 
   let academia = {
     nextFitApiKey: '',
@@ -30,6 +33,11 @@ export default async function SettingsPage() {
       <SettingsBannerForm
         initialMobileUrl={banners.mobileUrl ?? ''}
         initialWebUrl={banners.webUrl ?? ''}
+      />
+
+      <SettingsLogoForm
+        initialLogoUnidade01Url={logos.unidade01Url ?? ''}
+        initialLogoUnidade02Url={logos.unidade02Url ?? ''}
       />
 
       <SettingsNextFitForm

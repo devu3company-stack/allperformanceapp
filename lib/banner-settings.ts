@@ -8,6 +8,11 @@ export type BannerSettings = {
   webUrl: string | null
 }
 
+export type LogoSettings = {
+  unidade01Url: string | null
+  unidade02Url: string | null
+}
+
 const BANNER_BUCKET = 'system-banners'
 
 function normalizeBannerUrl(value: string) {
@@ -38,6 +43,29 @@ export const getBannerSettings = cache(async (): Promise<BannerSettings> => {
   }
 })
 
+export const getLogoSettings = cache(async (): Promise<LogoSettings> => {
+  try {
+    const academiaId = await getDefaultAcademiaId()
+    const config = await prisma.configuracaoAcademia.findUnique({
+      where: { academiaId },
+      select: {
+        logoUnidade01Url: true,
+        logoUnidade02Url: true,
+      },
+    })
+
+    return {
+      unidade01Url: config?.logoUnidade01Url ?? null,
+      unidade02Url: config?.logoUnidade02Url ?? null,
+    }
+  } catch {
+    return {
+      unidade01Url: null,
+      unidade02Url: null,
+    }
+  }
+})
+
 export async function saveBannerSettings(mobileUrl: string, webUrl: string) {
   const academiaId = await getDefaultAcademiaId()
 
@@ -53,6 +81,25 @@ export async function saveBannerSettings(mobileUrl: string, webUrl: string) {
       permiteComentarios: true,
       bannerMobileUrl: normalizeBannerUrl(mobileUrl),
       bannerWebUrl: normalizeBannerUrl(webUrl),
+    },
+  })
+}
+
+export async function saveLogoSettings(unidade01Url: string, unidade02Url: string) {
+  const academiaId = await getDefaultAcademiaId()
+
+  await prisma.configuracaoAcademia.upsert({
+    where: { academiaId },
+    update: {
+      logoUnidade01Url: normalizeBannerUrl(unidade01Url),
+      logoUnidade02Url: normalizeBannerUrl(unidade02Url),
+    },
+    create: {
+      academiaId,
+      feedModeracaoAtiva: true,
+      permiteComentarios: true,
+      logoUnidade01Url: normalizeBannerUrl(unidade01Url),
+      logoUnidade02Url: normalizeBannerUrl(unidade02Url),
     },
   })
 }
@@ -94,7 +141,7 @@ async function ensureBannerBucket() {
   return supabaseAdmin
 }
 
-export async function uploadBannerFile(file: File, variant: 'mobile' | 'web') {
+export async function uploadBannerFile(file: File, variant: 'mobile' | 'web' | 'logo-unidade-01' | 'logo-unidade-02') {
   const supabaseAdmin = await ensureBannerBucket()
   const extension = getFileExtension(file)
   const filePath = `${variant}/banner-${Date.now()}.${extension}`

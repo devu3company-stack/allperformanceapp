@@ -33,7 +33,7 @@ export default function PrimeiroAcessoPage() {
         <p className="text-[11px] uppercase tracking-[0.24em] text-ap-red">Aluno</p>
         <h1 className="mt-2 text-2xl font-bold sm:text-3xl">Primeiro acesso</h1>
         <p className="mt-3 text-sm leading-6 text-gray-400">
-          Use seu CPF para localizar seu cadastro, informar seu e-mail, criar sua senha e confirmar sua data de nascimento.
+          Use seu CPF para localizar seu cadastro, informar seu e-mail, escolher a unidade onde vai treinar, criar sua senha e confirmar sua data de nascimento.
         </p>
 
         <form action={handleAction} className="mt-6 space-y-4">
@@ -51,6 +51,22 @@ export default function PrimeiroAcessoPage() {
             placeholder="Seu melhor e-mail"
             className="w-full rounded-xl border border-white/10 bg-[#1A1A1A] px-4 py-3 text-sm text-white outline-none focus:border-ap-red"
           />
+          <select
+            name="unidadeTreino"
+            required
+            defaultValue=""
+            className="w-full rounded-xl border border-white/10 bg-[#1A1A1A] px-4 py-3 text-sm text-white outline-none focus:border-ap-red"
+          >
+            <option value="" disabled className="text-black">
+              Selecione sua unidade
+            </option>
+            <option value="ZERAO" className="text-black">
+              Unidade 01 (Zerão)
+            </option>
+            <option value="BOSQUE" className="text-black">
+              Unidade 02 (Bosque)
+            </option>
+          </select>
           <input
             name="dataNascimento"
             type="date"

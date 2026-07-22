@@ -109,6 +109,11 @@ enum StatusAluno {
   INADIMPLENTE
 }
 
+enum UnidadeTreino {
+  ZERAO
+  BOSQUE
+}
+
 model Aluno {
   id         String      @id @default(cuid())
   academiaId String
@@ -121,6 +126,7 @@ model Aluno {
   fotoUrl    String?
   dataNascimento DateTime?
   status     StatusAluno @default(ATIVO)
+  unidadeTreino UnidadeTreino?
 
   // ID do aluno no sistema Next Fit (para sincronização)
   nextFitClienteId String?
@@ -370,6 +376,8 @@ model ConfiguracaoAcademia {
   permiteComentarios Boolean @default(true)
   bannerMobileUrl    String?
   bannerWebUrl       String?
+  logoUnidade01Url   String?
+  logoUnidade02Url   String?
 
   @@map("configuracoes_academia")
 }

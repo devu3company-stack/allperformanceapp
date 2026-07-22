@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { saveBannerSettings, uploadBannerFile } from '@/lib/banner-settings'
+import { saveBannerSettings, saveLogoSettings, uploadBannerFile } from '@/lib/banner-settings'
 import { saveNextFitSettings } from '@/lib/academia'
 
 export type SaveSettingsResult = {
@@ -49,6 +49,35 @@ export async function updateNextFitSettings(formData: FormData): Promise<SaveSet
   } catch (error) {
     return {
       error: error instanceof Error ? error.message : 'Não foi possível salvar a conexão do Next Fit.',
+    }
+  }
+}
+
+export async function updateLogoSettings(formData: FormData): Promise<SaveSettingsResult> {
+  let unidade01Url = String(formData.get('logoUnidade01Url') ?? '')
+  let unidade02Url = String(formData.get('logoUnidade02Url') ?? '')
+  const unidade01File = formData.get('logoUnidade01File')
+  const unidade02File = formData.get('logoUnidade02File')
+
+  try {
+    if (unidade01File instanceof File && unidade01File.size > 0) {
+      unidade01Url = await uploadBannerFile(unidade01File, 'logo-unidade-01')
+    }
+
+    if (unidade02File instanceof File && unidade02File.size > 0) {
+      unidade02Url = await uploadBannerFile(unidade02File, 'logo-unidade-02')
+    }
+
+    await saveLogoSettings(unidade01Url, unidade02Url)
+    revalidatePath('/feed')
+    revalidatePath('/agenda')
+    revalidatePath('/perfil')
+    revalidatePath('/settings')
+
+    return { success: 'Logos das unidades atualizadas com sucesso.' }
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : 'Não foi possível salvar as logos das unidades.',
     }
   }
 }

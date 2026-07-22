@@ -16,6 +16,11 @@ export default async function PerfilPage() {
   const birthday = aluno.dataNascimento
     ? aluno.dataNascimento.toLocaleDateString('pt-BR')
     : 'Não informada'
+  const unidade = aluno.unidadeTreino === 'BOSQUE'
+    ? 'Unidade 02 (Bosque)'
+    : aluno.unidadeTreino === 'ZERAO'
+      ? 'Unidade 01 (Zerão)'
+      : 'Não informada'
 
   return (
     <div className="space-y-5 text-white">
@@ -56,6 +61,10 @@ export default async function PerfilPage() {
           <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-[#111] px-4 py-3">
             <Cake size={16} className="text-ap-red" />
             <span>{birthday}</span>
+          </div>
+          <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-[#111] px-4 py-3">
+            <User size={16} className="text-ap-red" />
+            <span>{unidade}</span>
           </div>
           <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-[#111] px-4 py-3">
             <User size={16} className="text-ap-red" />

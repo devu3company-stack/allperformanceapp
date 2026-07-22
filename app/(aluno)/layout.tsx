@@ -2,10 +2,21 @@ import Link from 'next/link'
 import { Bell, Rss, Calendar, QrCode, User, BarChart, LogOut } from 'lucide-react'
 import { logout } from '@/app/auth/actions'
 import { AppBanner } from '@/components/app-banner'
-import { getBannerSettings } from '@/lib/banner-settings'
+import { getBannerSettings, getLogoSettings } from '@/lib/banner-settings'
+import { getCurrentAlunoProfile } from '@/lib/current-aluno'
 
 export default async function AlunoLayout({ children }: { children: React.ReactNode }) {
-  const banners = await getBannerSettings()
+  const [banners, logos] = await Promise.all([
+    getBannerSettings(),
+    getLogoSettings(),
+  ])
+  const aluno = await getCurrentAlunoProfile()
+  const profilePhotoUrl = aluno?.fotoUrl ?? `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(aluno?.nome ?? 'Felix')}`
+  const academiaLogoUrl = aluno?.unidadeTreino === 'BOSQUE'
+    ? logos.unidade02Url
+    : aluno?.unidadeTreino === 'ZERAO'
+      ? logos.unidade01Url
+      : logos.unidade01Url
 
   return (
     <div style={{ minHeight: '100vh', background: '#0A0A0A', color: '#e2e2e2', fontFamily: "'Archivo Narrow', 'Inter', sans-serif", paddingBottom: '104px', overflowX: 'hidden' }}>
@@ -13,11 +24,19 @@ export default async function AlunoLayout({ children }: { children: React.ReactN
       <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, height: '64px', background: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 14px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{ width: '40px', height: '40px', borderRadius: '50%', border: '2px solid #E4002B', padding: '2px', overflow: 'hidden', flexShrink: 0 }}>
-            <img alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} src="https://api.dicebear.com/9.x/avataaars/svg?seed=Felix" />
+            <img alt={aluno?.nome ?? 'Profile'} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} src={profilePhotoUrl} />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <div style={{ width: '36px', height: '36px', background: '#fff', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
-              <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 900, fontSize: '10px', color: '#0A0A0A', textAlign: 'center', lineHeight: '1.1' }}>ALL<br/>PERF</span>
+              {academiaLogoUrl ? (
+                <img
+                  alt="Logo da academia"
+                  src={academiaLogoUrl}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 900, fontSize: '10px', color: '#0A0A0A', textAlign: 'center', lineHeight: '1.1' }}>ALL<br/>PERF</span>
+              )}
             </div>
           </div>
         </div>
