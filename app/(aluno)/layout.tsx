@@ -8,9 +8,9 @@ export default async function AlunoLayout({ children }: { children: React.ReactN
   const banners = await getBannerSettings()
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0A0A0A', color: '#e2e2e2', fontFamily: "'Archivo Narrow', 'Inter', sans-serif", paddingBottom: '96px', overflowX: 'hidden' }}>
+    <div style={{ minHeight: '100vh', background: '#0A0A0A', color: '#e2e2e2', fontFamily: "'Archivo Narrow', 'Inter', sans-serif", paddingBottom: '104px', overflowX: 'hidden' }}>
       {/* TopAppBar */}
-      <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, height: '64px', background: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px' }}>
+      <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, height: '64px', background: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 14px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{ width: '40px', height: '40px', borderRadius: '50%', border: '2px solid #E4002B', padding: '2px', overflow: 'hidden', flexShrink: 0 }}>
             <img alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} src="https://api.dicebear.com/9.x/avataaars/svg?seed=Felix" />
@@ -45,7 +45,7 @@ export default async function AlunoLayout({ children }: { children: React.ReactN
         </div>
       </header>
 
-      <main style={{ paddingTop: '80px', paddingLeft: '16px', paddingRight: '16px', maxWidth: '520px', margin: '0 auto' }}>
+      <main style={{ paddingTop: '80px', paddingLeft: '14px', paddingRight: '14px', maxWidth: '520px', margin: '0 auto' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <AppBanner variant="aluno" src={banners.mobileUrl} />
           {children}
@@ -53,28 +53,28 @@ export default async function AlunoLayout({ children }: { children: React.ReactN
       </main>
 
       {/* BottomNavBar */}
-      <nav style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50, height: '80px', background: 'rgba(12,15,15,0.95)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderTop: '1px solid rgba(255,255,255,0.07)', borderRadius: '28px 28px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'space-around', padding: '0 8px', boxShadow: '0 -8px 32px rgba(0,0,0,0.6)' }}>
-        <Link href="/feed" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: '#E4002B', textDecoration: 'none', fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', filter: 'drop-shadow(0 0 8px rgba(228,0,43,0.4))' }}>
-          <Rss size={26} />
+      <nav style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50, height: '78px', background: 'rgba(12,15,15,0.95)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderTop: '1px solid rgba(255,255,255,0.07)', borderRadius: '24px 24px 0 0', display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', alignItems: 'center', padding: '0 6px', boxShadow: '0 -8px 32px rgba(0,0,0,0.6)' }}>
+        <Link href="/feed" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: '#E4002B', textDecoration: 'none', fontSize: '9px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', filter: 'drop-shadow(0 0 8px rgba(228,0,43,0.4))' }}>
+          <Rss size={24} />
           <span>Feed</span>
         </Link>
-        <Link href="/agenda" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: '#9ca3af', textDecoration: 'none', fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', opacity: 0.65 }}>
-          <Calendar size={26} />
+        <Link href="/agenda" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: '#9ca3af', textDecoration: 'none', fontSize: '9px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', opacity: 0.65 }}>
+          <Calendar size={24} />
           <span>Agenda</span>
         </Link>
         {/* Check-in center FAB */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', marginBottom: '28px' }}>
-          <Link href="/checkin" style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#E4002B', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', textDecoration: 'none', boxShadow: '0 0 28px rgba(228,0,43,0.55)', flexShrink: 0 }}>
-            <QrCode size={30} />
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', marginBottom: '24px' }}>
+          <Link href="/checkin" style={{ width: '58px', height: '58px', borderRadius: '50%', background: '#E4002B', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', textDecoration: 'none', boxShadow: '0 0 28px rgba(228,0,43,0.55)', flexShrink: 0 }}>
+            <QrCode size={28} />
           </Link>
-          <span style={{ marginTop: '6px', fontSize: '10px', color: '#E4002B', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Check-in</span>
+          <span style={{ marginTop: '4px', fontSize: '9px', color: '#E4002B', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Check-in</span>
         </div>
-        <Link href="/perfil" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: '#9ca3af', textDecoration: 'none', fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', opacity: 0.65 }}>
-          <User size={26} />
+        <Link href="/perfil" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: '#9ca3af', textDecoration: 'none', fontSize: '9px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', opacity: 0.65 }}>
+          <User size={24} />
           <span>Perfil</span>
         </Link>
-        <Link href="/stats" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: '#9ca3af', textDecoration: 'none', fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', opacity: 0.65 }}>
-          <BarChart size={26} />
+        <Link href="/stats" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: '#9ca3af', textDecoration: 'none', fontSize: '9px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', opacity: 0.65 }}>
+          <BarChart size={24} />
           <span>Stats</span>
         </Link>
       </nav>

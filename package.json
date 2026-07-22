@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "notify:birthdays": "tsx scripts/notify-birthdays.ts",
+    "setup:demo-users": "tsx scripts/setup-demo-users.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:push": "prisma db push",

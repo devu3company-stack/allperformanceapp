@@ -134,9 +134,9 @@ export default async function AgendaPage() {
   return (
     <div>
       {/* Title */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-        <h2 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: '24px', color: '#e2e2e2' }}>Schedule</h2>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', letterSpacing: '0.1em', color: 'rgba(232,188,185,0.7)', textTransform: 'uppercase' }}>
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <h2 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: '22px', color: '#e2e2e2' }}>Schedule</h2>
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', letterSpacing: '0.1em', color: 'rgba(232,188,185,0.7)', textTransform: 'uppercase' }}>
           {format(today, 'MMMM yyyy', { locale: ptBR }).toUpperCase()}
         </span>
       </div>
@@ -160,40 +160,42 @@ export default async function AgendaPage() {
       {/* Classes List */}
       <section style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {displayAulas.map((aula) => (
-          <div key={aula.id} style={{ ...cardStyle, borderColor: aula.status === 'booked' ? 'rgba(228,0,43,0.3)' : 'rgba(255,255,255,0.04)' }}>
-            {/* Time & Duration Row */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '14px', letterSpacing: '0.05em', color: '#E4002B', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>
-                  {aula.horario}
-                </span>
-                <h3 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: '24px', color: '#e2e2e2', margin: 0 }}>
-                  {aula.nome}
-                </h3>
+            <div key={aula.id} style={{ ...cardStyle, borderColor: aula.status === 'booked' ? 'rgba(228,0,43,0.3)' : 'rgba(255,255,255,0.04)' }}>
+              {/* Time & Duration Row */}
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '14px', letterSpacing: '0.05em', color: '#E4002B', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>
+                    {aula.horario}
+                  </span>
+                  <h3 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: '22px', color: '#e2e2e2', margin: 0 }}>
+                    {aula.nome}
+                  </h3>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {aula.duracao && (
+                    <div style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', letterSpacing: '0.1em', color: 'rgba(232,188,185,0.7)' }}>{aula.duracao}</span>
+                    </div>
+                  )}
+                  {aula.status === 'booked' && (
+                    <div style={{ padding: '4px 8px', background: 'rgba(228,0,43,0.1)', borderRadius: '4px', border: '1px solid rgba(228,0,43,0.2)' }}>
+                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', letterSpacing: '0.1em', color: '#E4002B' }}>AGENDADO</span>
+                    </div>
+                  )}
+                  {aula.status === 'full' && (
+                    <div style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.06)', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.12)' }}>
+                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', letterSpacing: '0.1em', color: 'rgba(232,188,185,0.7)' }}>LOTADA</span>
+                    </div>
+                  )}
+                  {aula.status === 'closed' && (
+                    <div style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.06)', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.12)' }}>
+                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', letterSpacing: '0.1em', color: 'rgba(232,188,185,0.7)' }}>ENCERRADA</span>
+                    </div>
+                  )}
+                </div>
               </div>
-              {aula.duracao && (
-                <div style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', letterSpacing: '0.1em', color: 'rgba(232,188,185,0.7)' }}>{aula.duracao}</span>
-                </div>
-              )}
-              {aula.status === 'booked' && (
-                <div style={{ padding: '4px 8px', background: 'rgba(228,0,43,0.1)', borderRadius: '4px', border: '1px solid rgba(228,0,43,0.2)' }}>
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', letterSpacing: '0.1em', color: '#E4002B' }}>AGENDADO</span>
-                </div>
-              )}
-              {aula.status === 'full' && (
-                <div style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.06)', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.12)' }}>
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', letterSpacing: '0.1em', color: 'rgba(232,188,185,0.7)' }}>LOTADA</span>
-                </div>
-              )}
-              {aula.status === 'closed' && (
-                <div style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.06)', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.12)' }}>
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', letterSpacing: '0.1em', color: 'rgba(232,188,185,0.7)' }}>ENCERRADA</span>
-                </div>
-              )}
-            </div>
-            {/* Coach & Button Row */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              {/* Coach & Button Row */}
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <div style={{ width: '40px', height: '40px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)', overflow: 'hidden', flexShrink: 0 }}>
                   <img alt={aula.coach} style={{ width: '100%', height: '100%', objectFit: 'cover' }} src={`https://api.dicebear.com/9.x/avataaars/svg?seed=${aula.seed}`} />
@@ -212,17 +214,18 @@ export default async function AgendaPage() {
                     style={{
                       background: aula.status === 'available' ? '#E4002B' : 'rgba(255,255,255,0.1)',
                       color: aula.status === 'available' ? '#fff6f5' : 'rgba(232,188,185,0.7)',
-                      padding: '8px 24px',
+                      padding: '10px 18px',
                       borderRadius: '999px',
                       border: aula.status === 'available' ? 'none' : '1px solid rgba(255,255,255,0.2)',
                       fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: '14px',
+                      fontSize: '13px',
                       fontWeight: 700,
                       letterSpacing: '0.05em',
                       textTransform: 'uppercase',
                       cursor: !currentAlunoId || aula.status === 'full' || aula.status === 'closed' ? 'not-allowed' : 'pointer',
                       boxShadow: aula.status === 'available' ? '0 0 15px rgba(228,0,43,0.2)' : 'none',
                       opacity: !currentAlunoId ? 0.6 : 1,
+                      width: '100%',
                     }}
                   >
                     {!currentAlunoId ? 'LOGIN' : aula.status === 'booked' ? 'CANCELAR' : aula.status === 'full' ? 'LOTADA' : aula.status === 'closed' ? 'ENCERRADA' : 'AGENDAR'}
@@ -243,8 +246,8 @@ export default async function AgendaPage() {
       </section>
 
       {/* FAB QR Check-in */}
-      <a href="/checkin" style={{ position: 'fixed', bottom: '100px', right: '24px', width: '64px', height: '64px', borderRadius: '16px', background: '#E4002B', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(228,0,43,0.5)', textDecoration: 'none', zIndex: 40 }}>
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h7v7H3zm2 2v3h3V5zm3 3H5V5h3zM14 3h7v7h-7zm2 2v3h3V5zm3 3h-3V5h3zM3 14h7v7H3zm2 2v3h3v-3zm3 3H5v-3h3zm6-3h2v2h-2zm2-2h2v2h-2zm-2-2h2v2h-2zm4 4h2v2h-2zm-2 2h2v2h-2zm2-4h2v2h-2z"/></svg>
+      <a href="/checkin" style={{ position: 'fixed', bottom: '94px', right: '16px', width: '56px', height: '56px', borderRadius: '16px', background: '#E4002B', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(228,0,43,0.5)', textDecoration: 'none', zIndex: 40 }}>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h7v7H3zm2 2v3h3V5zm3 3H5V5h3zM14 3h7v7h-7zm2 2v3h3V5zm3 3h-3V5h3zM3 14h7v7H3zm2 2v3h3v-3zm3 3H5v-3h3zm6-3h2v2h-2zm2-2h2v2h-2zm-2-2h2v2h-2zm4 4h2v2h-2zm-2 2h2v2h-2zm2-4h2v2h-2z"/></svg>
       </a>
     </div>
   )

@@ -4,8 +4,6 @@ import { useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { login } from './actions'
 
-const isDev = process.env.NODE_ENV === 'development'
-
 function SubmitButton() {
   const { pending } = useFormStatus()
   return (
@@ -34,22 +32,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', background: '#0A0A0A', fontFamily: "'Inter', sans-serif" }}>
+    <div className="min-h-screen bg-[#0A0A0A] lg:grid lg:grid-cols-[minmax(0,1fr)_480px]" style={{ fontFamily: "'Inter', sans-serif" }}>
       {/* Lado esquerdo — branding */}
       <div
+        className="relative hidden overflow-hidden border-r border-[#222] bg-[linear-gradient(135deg,#0A0A0A_0%,#1A1A1A_100%)] px-14 py-20 lg:flex lg:flex-col lg:items-start lg:justify-center xl:px-20"
         style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'flex-start',
-          padding: '80px',
-          background: 'linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%)',
-          borderRight: '1px solid #222',
           position: 'relative',
-          overflow: 'hidden',
         }}
-        className="hidden lg:flex"
       >
         {/* Glow decorativo */}
         <div style={{
@@ -74,7 +63,7 @@ export default function LoginPage() {
         }} />
 
         {/* Logo */}
-        <div style={{ marginBottom: '60px' }}>
+        <div className="mb-12 xl:mb-[60px]">
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
               <path d="M2 22 L8 10 L14 18 L18 14 L24 22 L30 10" stroke="#E4002B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -88,7 +77,7 @@ export default function LoginPage() {
         {/* Headline */}
         <h1 style={{
           fontFamily: "'Anton', sans-serif",
-          fontSize: '72px',
+          fontSize: 'clamp(56px, 6vw, 72px)',
           lineHeight: '1',
           color: '#FFFFFF',
           textTransform: 'uppercase',
@@ -103,10 +92,13 @@ export default function LoginPage() {
           Plataforma de gestão completa para academias de alta performance. Alunos, turmas, financeiro e feed social — tudo em um só lugar.
         </p>
 
+        <p style={{ color: '#E4002B', fontSize: '20px', fontWeight: 700, marginTop: '24px' }}>
+          Um lugar para pertencer
+        </p>
+
         {/* Stats */}
         <div style={{ display: 'flex', gap: '48px', marginTop: '60px' }}>
           {[
-            { num: '500+', label: 'Alunos Ativos' },
             { num: '98%', label: 'Retenção' },
             { num: '24/7', label: 'Suporte' },
           ].map((s) => (
@@ -119,23 +111,16 @@ export default function LoginPage() {
       </div>
 
       {/* Lado direito — formulário */}
-      <div style={{
-        width: '100%',
-        maxWidth: '480px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        padding: '60px 48px',
-        background: '#0F0F0F',
-      }}>
+      <div className="flex min-h-screen w-full items-center justify-center bg-[#0F0F0F] px-4 py-8 sm:px-6 lg:min-h-0 lg:px-12 lg:py-12">
+        <div className="w-full max-w-[480px]">
         {/* Logo mobile */}
-        <div style={{ marginBottom: '48px' }} className="lg:hidden">
+        <div className="mb-10 lg:hidden">
           <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
             <path d="M2 22 L8 10 L14 18 L18 14 L24 22 L30 10" stroke="#E4002B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
           <h1 style={{
             fontFamily: "'Anton', sans-serif",
-            fontSize: '36px',
+            fontSize: '32px',
             color: '#FFF',
             textTransform: 'uppercase',
             letterSpacing: '2px',
@@ -145,34 +130,36 @@ export default function LoginPage() {
           </h1>
         </div>
 
-        <div style={{ marginBottom: '40px' }}>
+        <div style={{ marginBottom: '28px' }}>
+          <p style={{ color: '#E4002B', fontSize: '12px', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '10px' }}>
+            Um lugar para pertencer
+          </p>
           <h2 style={{ color: '#FFF', fontSize: '24px', fontWeight: 700, marginBottom: '8px' }}>
             Bem-vindo de volta
           </h2>
           <p style={{ color: '#555', fontSize: '14px' }}>
             Acesse sua conta para continuar
           </p>
-          {isDev && (
-            <div
-              style={{
-                marginTop: '16px',
-                padding: '12px 14px',
-                borderRadius: '12px',
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                color: '#9CA3AF',
-                fontSize: '12px',
-                lineHeight: '1.6',
-              }}
-            >
-              <div><strong style={{ color: '#FFF' }}>Teste aluno:</strong> aluno.teste@allperformance.local / 12345678</div>
-              <div><strong style={{ color: '#FFF' }}>Teste gestor:</strong> gestor.teste@allperformance.local / 12345678</div>
-              <div><strong style={{ color: '#FFF' }}>Teste professor:</strong> professor.teste@allperformance.local / 12345678</div>
-            </div>
-          )}
+          <div
+            style={{
+              marginTop: '16px',
+              padding: '12px 14px',
+              borderRadius: '12px',
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              color: '#9CA3AF',
+              fontSize: '12px',
+              lineHeight: '1.6',
+            }}
+          >
+            <div style={{ color: '#FFF', fontWeight: 700, marginBottom: '6px' }}>Acessos de teste disponíveis</div>
+            <div><strong style={{ color: '#FFF' }}>Aluno:</strong> aluno.teste@allperformance.local / 12345678</div>
+            <div><strong style={{ color: '#FFF' }}>Gestor:</strong> gestor.teste@allperformance.local / 12345678</div>
+            <div><strong style={{ color: '#FFF' }}>Professor:</strong> professor.teste@allperformance.local / 12345678</div>
+          </div>
         </div>
 
-        <form action={handleAction} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <form action={handleAction} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
             <label style={{ display: 'block', color: '#888', fontSize: '12px', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '8px' }}>
               E-mail
@@ -241,7 +228,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          <div style={{ marginTop: '8px' }}>
+          <div style={{ marginTop: '4px' }}>
             <SubmitButton />
           </div>
         </form>
@@ -252,9 +239,10 @@ export default function LoginPage() {
           </a>
         </div>
 
-        <p style={{ marginTop: '40px', textAlign: 'center', color: '#333', fontSize: '12px' }}>
+        <p style={{ marginTop: '32px', textAlign: 'center', color: '#333', fontSize: '12px', lineHeight: '1.5' }}>
           © 2025 ALL Performance. Todos os direitos reservados.
         </p>
+        </div>
       </div>
     </div>
   )

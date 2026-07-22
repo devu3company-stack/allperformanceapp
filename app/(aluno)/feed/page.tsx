@@ -115,7 +115,7 @@ export default async function FeedPage() {
           <p style={{ margin: 0, color: '#E4002B', fontSize: '11px', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.12em', textTransform: 'uppercase' }}>
             Comunicados internos
           </p>
-          <h2 style={{ margin: '10px 0 6px', color: '#fff', fontSize: '22px', fontFamily: "'Montserrat', sans-serif" }}>
+          <h2 style={{ margin: '10px 0 6px', color: '#fff', fontSize: '20px', fontFamily: "'Montserrat', sans-serif", lineHeight: 1.15 }}>
             Atualizações da equipe e dos professores
           </h2>
           <p style={{ margin: 0, color: 'rgba(232,188,185,0.72)', fontSize: '13px', lineHeight: '1.6' }}>
@@ -124,18 +124,18 @@ export default async function FeedPage() {
         </div>
       </section>
 
-      <section style={{ marginBottom: '24px', overflowX: 'auto', display: 'flex', gap: '16px', paddingBottom: '8px', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      <section style={{ marginBottom: '24px', overflowX: 'auto', display: 'flex', gap: '14px', paddingBottom: '8px', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         {[
           { name: 'Prof. Marcus', seed: 'prof-marcus', active: true },
           { name: 'Coach Jax', seed: 'coach-jax', active: true },
           { name: 'Recepção', seed: 'recepcao', active: false },
           { name: 'Coordenação', seed: 'coordenacao', active: false },
         ].map((s) => (
-          <div key={s.name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', flexShrink: 0, opacity: s.active ? 1 : 0.7 }}>
+          <div key={s.name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', flexShrink: 0, opacity: s.active ? 1 : 0.7, width: '64px' }}>
             <div style={{ width: '64px', height: '64px', borderRadius: '50%', padding: '2px', background: s.active ? 'linear-gradient(135deg, #E4002B, #ffb3af)' : '#282a2b', boxShadow: s.active ? '0 0 0 2px #0A0A0A' : 'none' }}>
               <img alt={s.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%', border: '2px solid #0A0A0A' }} src={`https://api.dicebear.com/9.x/avataaars/svg?seed=${s.seed}`} />
             </div>
-            <span style={{ fontSize: '10px', color: s.active ? '#E4002B' : 'rgba(232,188,185,0.7)', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.03em' }}>{s.name}</span>
+            <span style={{ fontSize: '10px', color: s.active ? '#E4002B' : 'rgba(232,188,185,0.7)', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.03em', textAlign: 'center', lineHeight: 1.3 }}>{s.name}</span>
           </div>
         ))}
       </section>
@@ -145,14 +145,14 @@ export default async function FeedPage() {
         {displayPosts.map((post) => (
           <article key={post.id} style={card}>
             {/* Header */}
-            <div style={{ padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
                 <div style={{ width: '32px', height: '32px', borderRadius: '50%', overflow: 'hidden', border: `1px solid ${post.avatarBorder}` }}>
                   <img alt={post.autor} style={{ width: '100%', height: '100%', objectFit: 'cover' }} src={`https://api.dicebear.com/9.x/avataaars/svg?seed=${post.avatarSeed}`} />
                 </div>
-                <div>
-                  <p style={{ fontSize: '12px', fontFamily: "'JetBrains Mono', monospace", color: '#fff', fontWeight: 500 }}>{post.autor}</p>
-                  <p style={{ fontSize: '10px', fontFamily: "'JetBrains Mono', monospace", color: 'rgba(232,188,185,0.7)' }}>{post.tempo}</p>
+                <div style={{ minWidth: 0 }}>
+                  <p style={{ fontSize: '12px', fontFamily: "'JetBrains Mono', monospace", color: '#fff', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{post.autor}</p>
+                  <p style={{ fontSize: '10px', fontFamily: "'JetBrains Mono', monospace", color: 'rgba(232,188,185,0.7)', lineHeight: 1.4 }}>{post.tempo}</p>
                 </div>
               </div>
               <button style={{ background: 'none', border: 'none', color: 'rgba(232,188,185,0.7)', cursor: 'pointer', padding: '4px' }}>
@@ -176,9 +176,9 @@ export default async function FeedPage() {
               )}
             </div>
             {/* Actions */}
-            <div style={{ padding: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <div style={{ padding: '14px 16px 16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', marginBottom: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
                   <button style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '6px', color: '#E4002B', cursor: 'pointer' }}>
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                     <span style={{ fontSize: '12px', fontFamily: "'JetBrains Mono', monospace" }}>{post.likes}</span>
