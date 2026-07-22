@@ -1,15 +1,56 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+const protectedPrefixes = [
+  '/feed',
+  '/agenda',
+  '/checkin',
+  '/dashboard',
+  '/alunos',
+  '/planos',
+  '/turmas',
+  '/moderacao',
+  '/settings',
+]
+
+function isProtectedPath(pathname: string) {
+  return protectedPrefixes.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+  )
+}
+
+function redirectToLogin(request: NextRequest) {
+  const url = request.nextUrl.clone()
+  url.pathname = '/login'
+  return NextResponse.redirect(url)
+}
+
 export async function middleware(request: NextRequest) {
+  const isDev = process.env.NODE_ENV === 'development'
+
+  if (isDev) {
+    return NextResponse.next({ request })
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error('Supabase env vars missing in middleware')
+
+    if (isProtectedPath(request.nextUrl.pathname)) {
+      return redirectToLogin(request)
+    }
+
+    return NextResponse.next({ request })
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   })
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
+  try {
+    const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
       cookies: {
         getAll() {
           return request.cookies.getAll()
@@ -24,28 +65,26 @@ export async function middleware(request: NextRequest) {
           )
         },
       },
+    })
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user && isProtectedPath(request.nextUrl.pathname)) {
+      return redirectToLogin(request)
     }
-  )
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  // DEV BYPASS: pula autenticação em desenvolvimento para testes de UI
-  const isDev = process.env.NODE_ENV === 'development'
-  if (isDev) {
     return supabaseResponse
-  }
+  } catch (error) {
+    console.error('Middleware auth check failed', error)
 
-  // TODO: Add specific role checks via Prisma using user.email or user.id
-  // Protect routes based on user role
-  if (!user && (request.nextUrl.pathname.startsWith('/feed') || request.nextUrl.pathname.startsWith('/dashboard'))) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    return NextResponse.redirect(url)
-  }
+    if (isProtectedPath(request.nextUrl.pathname)) {
+      return redirectToLogin(request)
+    }
 
-  return supabaseResponse
+    return NextResponse.next({ request })
+  }
 }
 
 export const config = {
