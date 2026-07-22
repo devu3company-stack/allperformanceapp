@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { saveBannerSettings } from '@/lib/banner-settings'
+import { saveBannerSettings, uploadBannerFile } from '@/lib/banner-settings'
 import { saveNextFitSettings } from '@/lib/academia'
 
 export type SaveSettingsResult = {
@@ -10,10 +10,20 @@ export type SaveSettingsResult = {
 }
 
 export async function updateBannerSettings(formData: FormData): Promise<SaveSettingsResult> {
-  const mobileUrl = String(formData.get('bannerMobileUrl') ?? '')
-  const webUrl = String(formData.get('bannerWebUrl') ?? '')
+  let mobileUrl = String(formData.get('bannerMobileUrl') ?? '')
+  let webUrl = String(formData.get('bannerWebUrl') ?? '')
+  const mobileFile = formData.get('bannerMobileFile')
+  const webFile = formData.get('bannerWebFile')
 
   try {
+    if (mobileFile instanceof File && mobileFile.size > 0) {
+      mobileUrl = await uploadBannerFile(mobileFile, 'mobile')
+    }
+
+    if (webFile instanceof File && webFile.size > 0) {
+      webUrl = await uploadBannerFile(webFile, 'web')
+    }
+
     await saveBannerSettings(mobileUrl, webUrl)
     revalidatePath('/dashboard')
     revalidatePath('/feed')

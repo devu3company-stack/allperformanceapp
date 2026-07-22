@@ -52,13 +52,19 @@ export function SettingsBannerForm({
             Banner mobile / app do aluno
           </label>
           <input
+            name="bannerMobileFile"
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/svg+xml"
+            className="mb-3 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 file:mr-3 file:rounded-md file:border-0 file:bg-ap-black file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-ap-charcoal"
+          />
+          <input
             name="bannerMobileUrl"
             defaultValue={initialMobileUrl}
             placeholder="https://.../banner-mobile.webp"
             className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none focus:border-ap-red focus:ring-2 focus:ring-ap-red/20"
           />
           <p className="mt-2 text-xs text-gray-500">
-            Recomendado: 1080 x 560 px. Deixe em branco para usar o placeholder padrão.
+            Recomendado: 1080 x 560 px. Você pode enviar o arquivo acima ou colar a URL manualmente. Deixe em branco para usar o placeholder padrão.
           </p>
         </div>
 
@@ -67,13 +73,19 @@ export function SettingsBannerForm({
             Banner web / painel
           </label>
           <input
+            name="bannerWebFile"
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/svg+xml"
+            className="mb-3 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 file:mr-3 file:rounded-md file:border-0 file:bg-ap-black file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-ap-charcoal"
+          />
+          <input
             name="bannerWebUrl"
             defaultValue={initialWebUrl}
             placeholder="https://.../banner-web.webp"
             className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none focus:border-ap-red focus:ring-2 focus:ring-ap-red/20"
           />
           <p className="mt-2 text-xs text-gray-500">
-            Recomendado: 1600 x 420 px. Deixe em branco para usar o placeholder padrão.
+            Recomendado: 1600 x 420 px. Você pode enviar o arquivo acima ou colar a URL manualmente. Deixe em branco para usar o placeholder padrão.
           </p>
         </div>
       </div>
