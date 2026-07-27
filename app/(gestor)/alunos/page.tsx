@@ -1,7 +1,10 @@
+import Link from 'next/link'
 import { Plus, Search, Filter } from 'lucide-react'
 import prisma from '@/lib/prisma'
 import { ImportStudentsForm } from './import-form'
 import { WorkoutEditor } from './workout-editor'
+
+export const dynamic = 'force-dynamic'
 
 type AlunoListItem = {
   id: string
@@ -11,6 +14,20 @@ type AlunoListItem = {
   treinoPersonalizado: string | null
   treinoAtualizadoEm: Date | null
   treinoAtualizadoPor: string | null
+}
+
+type AlunosPageProps = {
+  searchParams?: {
+    q?: string | string[]
+  }
+}
+
+function getSearchQuery(value: string | string[] | undefined) {
+  if (Array.isArray(value)) {
+    return value[0]?.trim() ?? ''
+  }
+
+  return String(value ?? '').trim()
 }
 
 function formatWorkoutUpdatedLabel(aluno: Pick<AlunoListItem, 'treinoAtualizadoEm' | 'treinoAtualizadoPor'>) {
@@ -26,10 +43,33 @@ function formatWorkoutUpdatedLabel(aluno: Pick<AlunoListItem, 'treinoAtualizadoE
   return `Atualizado em ${updatedAt}${aluno.treinoAtualizadoPor ? ` por ${aluno.treinoAtualizadoPor}` : ''}`
 }
 
-export default async function AlunosPage() {
+export default async function AlunosPage({ searchParams }: AlunosPageProps) {
+  const searchQuery = getSearchQuery(searchParams?.q)
+  const cpfQuery = searchQuery.replace(/\D/g, '')
   let alunos: AlunoListItem[] = []
   try {
     alunos = await prisma.aluno.findMany({
+      where: searchQuery
+        ? {
+            OR: [
+              {
+                nome: {
+                  contains: searchQuery,
+                  mode: 'insensitive',
+                },
+              },
+              ...(cpfQuery
+                ? [
+                    {
+                      cpf: {
+                        contains: cpfQuery,
+                      },
+                    },
+                  ]
+                : []),
+            ],
+          }
+        : undefined,
       select: {
         id: true,
         nome: true,
@@ -39,7 +79,6 @@ export default async function AlunosPage() {
         treinoAtualizadoEm: true,
         treinoAtualizadoPor: true,
       },
-      take: 20,
       orderBy: { nome: 'asc' },
     })
   } catch (e) {
@@ -63,6 +102,18 @@ export default async function AlunosPage() {
         treinoAtualizadoPor: null,
       },
     ]
+
+    if (searchQuery) {
+      const normalizedQuery = searchQuery.toLowerCase()
+      alunos = alunos.filter((aluno) => {
+        const normalizedCpf = aluno.cpf.replace(/\D/g, '')
+
+        return (
+          aluno.nome.toLowerCase().includes(normalizedQuery) ||
+          (cpfQuery ? normalizedCpf.includes(cpfQuery) : false)
+        )
+      })
+    }
   }
 
   return (
@@ -85,19 +136,38 @@ export default async function AlunosPage() {
       </div>
 
       <div className="bg-white border border-ap-grayLine rounded-xl shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-ap-grayLine flex gap-4">
+        <form method="get" className="flex flex-col gap-3 border-b border-ap-grayLine p-4 sm:flex-row sm:items-center">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input 
-              type="text" 
-              placeholder="Buscar por nome ou CPF..." 
+            <input
+              type="text"
+              name="q"
+              defaultValue={searchQuery}
+              placeholder="Buscar por nome ou CPF..."
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ap-red focus:border-ap-red"
             />
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+          <button
+            type="submit"
+            className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+          >
             <Filter size={18} />
-            Filtros
+            Buscar
           </button>
+          {searchQuery && (
+            <Link
+              href="/alunos"
+              className="flex items-center justify-center rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+            >
+              Limpar
+            </Link>
+          )}
+        </form>
+
+        <div className="border-b border-ap-grayLine px-6 py-3 text-xs text-gray-500">
+          {searchQuery
+            ? `${alunos.length} aluno(s) encontrado(s) para "${searchQuery}".`
+            : `${alunos.length} aluno(s) listado(s).`}
         </div>
 
         <div className="overflow-x-auto">
@@ -140,6 +210,13 @@ export default async function AlunosPage() {
                   </td>
                 </tr>
               ))}
+              {alunos.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-6 py-8 text-center text-sm text-gray-500">
+                    Nenhum aluno encontrado com esse nome ou CPF.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
