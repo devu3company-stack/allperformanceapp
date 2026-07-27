@@ -5,6 +5,8 @@ const protectedPrefixes = [
   '/feed',
   '/agenda',
   '/checkin',
+  '/perfil',
+  '/treino',
   '/dashboard',
   '/alunos',
   '/planos',

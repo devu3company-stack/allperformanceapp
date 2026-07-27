@@ -127,6 +127,9 @@ model Aluno {
   dataNascimento DateTime?
   status     StatusAluno @default(ATIVO)
   unidadeTreino UnidadeTreino?
+  treinoPersonalizado String? @db.Text
+  treinoAtualizadoEm DateTime?
+  treinoAtualizadoPor String?
 
   // ID do aluno no sistema Next Fit (para sincronização)
   nextFitClienteId String?

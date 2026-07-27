@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Bell, Rss, Calendar, QrCode, User, BarChart, LogOut } from 'lucide-react'
+import { Bell, Rss, Calendar, QrCode, User, Dumbbell, LogOut } from 'lucide-react'
 import { logout } from '@/app/auth/actions'
 import { AppBanner } from '@/components/app-banner'
 import { getBannerSettings, getLogoSettings } from '@/lib/banner-settings'
@@ -92,9 +92,9 @@ export default async function AlunoLayout({ children }: { children: React.ReactN
           <User size={24} />
           <span>Perfil</span>
         </Link>
-        <Link href="/stats" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: '#9ca3af', textDecoration: 'none', fontSize: '9px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', opacity: 0.65 }}>
-          <BarChart size={24} />
-          <span>Stats</span>
+        <Link href="/treino" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: '#9ca3af', textDecoration: 'none', fontSize: '9px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', opacity: 0.65 }}>
+          <Dumbbell size={24} />
+          <span>Treino</span>
         </Link>
       </nav>
     </div>

@@ -1,18 +1,67 @@
 import { Plus, Search, Filter } from 'lucide-react'
 import prisma from '@/lib/prisma'
 import { ImportStudentsForm } from './import-form'
+import { WorkoutEditor } from './workout-editor'
+
+type AlunoListItem = {
+  id: string
+  nome: string
+  cpf: string
+  status: string
+  treinoPersonalizado: string | null
+  treinoAtualizadoEm: Date | null
+  treinoAtualizadoPor: string | null
+}
+
+function formatWorkoutUpdatedLabel(aluno: Pick<AlunoListItem, 'treinoAtualizadoEm' | 'treinoAtualizadoPor'>) {
+  if (!aluno.treinoAtualizadoEm) {
+    return null
+  }
+
+  const updatedAt = aluno.treinoAtualizadoEm.toLocaleString('pt-BR', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  })
+
+  return `Atualizado em ${updatedAt}${aluno.treinoAtualizadoPor ? ` por ${aluno.treinoAtualizadoPor}` : ''}`
+}
 
 export default async function AlunosPage() {
-  let alunos: any[] = []
+  let alunos: AlunoListItem[] = []
   try {
     alunos = await prisma.aluno.findMany({
+      select: {
+        id: true,
+        nome: true,
+        cpf: true,
+        status: true,
+        treinoPersonalizado: true,
+        treinoAtualizadoEm: true,
+        treinoAtualizadoPor: true,
+      },
       take: 20,
-      orderBy: { nome: 'asc' }
+      orderBy: { nome: 'asc' },
     })
-  } catch(e) {
+  } catch (e) {
     alunos = [
-      { id: '1', nome: 'Sarah Jenkins', cpf: '123.456.789-00', status: 'ATIVO' },
-      { id: '2', nome: 'Marcus Thorne', cpf: '098.765.432-11', status: 'INADIMPLENTE' }
+      {
+        id: '1',
+        nome: 'Sarah Jenkins',
+        cpf: '123.456.789-00',
+        status: 'ATIVO',
+        treinoPersonalizado: 'Aquecimento de 10 min na esteira\nAgachamento 4x12\nLeg press 4x10\nPrancha 3x40s',
+        treinoAtualizadoEm: new Date(),
+        treinoAtualizadoPor: 'Prof. Marcus',
+      },
+      {
+        id: '2',
+        nome: 'Marcus Thorne',
+        cpf: '098.765.432-11',
+        status: 'INADIMPLENTE',
+        treinoPersonalizado: null,
+        treinoAtualizadoEm: null,
+        treinoAtualizadoPor: null,
+      },
     ]
   }
 
@@ -24,6 +73,10 @@ export default async function AlunosPage() {
         <div>
           <h1 className="text-2xl font-display uppercase tracking-wide">Alunos</h1>
           <p className="text-gray-500 text-sm">Gerencie os alunos cadastrados.</p>
+          <p className="mt-1 text-sm text-gray-500">
+            Professores e gestores podem salvar um treino diferente para cada aluno.
+            O conteúdo aparece na aba <strong>Treino</strong> do app.
+          </p>
         </div>
         <button className="flex items-center gap-2 bg-ap-black text-white px-4 py-2 rounded-lg hover:bg-ap-charcoal transition-colors shadow-sm">
           <Plus size={18} />
@@ -54,11 +107,11 @@ export default async function AlunosPage() {
                 <th className="px-6 py-3">Nome</th>
                 <th className="px-6 py-3">CPF</th>
                 <th className="px-6 py-3">Status</th>
-                <th className="px-6 py-3 text-right">Ações</th>
+                <th className="px-6 py-3 min-w-[360px]">Treino personalizado</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 text-gray-800">
-              {alunos.map((aluno: any) => (
+              {alunos.map((aluno) => (
                 <tr key={aluno.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 font-medium">{aluno.nome}</td>
                   <td className="px-6 py-4 text-gray-500">{aluno.cpf}</td>
@@ -75,10 +128,15 @@ export default async function AlunosPage() {
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
                         {aluno.status}
                       </span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <button className="text-ap-red hover:text-ap-redDark font-medium text-sm">Editar</button>
+                      )}
+                    </td>
+                  <td className="px-6 py-4 align-top">
+                    <WorkoutEditor
+                      alunoId={aluno.id}
+                      alunoNome={aluno.nome}
+                      initialWorkout={aluno.treinoPersonalizado}
+                      lastUpdatedLabel={formatWorkoutUpdatedLabel(aluno)}
+                    />
                   </td>
                 </tr>
               ))}

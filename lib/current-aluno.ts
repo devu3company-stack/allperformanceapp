@@ -25,6 +25,9 @@ export async function getCurrentAlunoProfile() {
       fotoUrl: true,
       status: true,
       unidadeTreino: true,
+      treinoPersonalizado: true,
+      treinoAtualizadoEm: true,
+      treinoAtualizadoPor: true,
     },
   })
 }

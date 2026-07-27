@@ -4,6 +4,8 @@ import { revalidatePath } from 'next/cache'
 import * as XLSX from 'xlsx'
 import prisma from '@/lib/prisma'
 import { getDefaultAcademiaId } from '@/lib/academia'
+import { getDevAuthUser } from '@/lib/dev-auth'
+import { createClient } from '@/lib/supabase/server'
 import {
   coerceStatusAluno,
   normalizeCpf,
@@ -20,6 +22,12 @@ export type ImportStudentsResult = {
   errors?: string[]
 }
 
+export type SaveStudentWorkoutResult = {
+  error?: string
+  success?: string
+  updatedLabel?: string | null
+}
+
 function normalizeHeader(value: string) {
   return value
     .normalize('NFD')
@@ -33,6 +41,60 @@ function getValue(row: Record<string, unknown>, candidates: string[]) {
   const entry = Object.entries(row).find(([key]) => candidateSet.has(normalizeHeader(key)))
 
   return entry?.[1]
+}
+
+async function getCurrentStaffContext() {
+  const devUser = getDevAuthUser()
+  let email = devUser && devUser.role !== 'aluno' ? devUser.email : null
+
+  if (!email) {
+    const supabase = createClient()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    email = user?.email?.trim().toLowerCase() ?? null
+  }
+
+  if (!email) {
+    return null
+  }
+
+  const usuario = await prisma.usuario.findUnique({
+    where: { email },
+    select: {
+      academiaId: true,
+      nome: true,
+      ativo: true,
+    },
+  })
+
+  if (usuario?.ativo) {
+    return {
+      academiaId: usuario.academiaId,
+      nome: usuario.nome,
+    }
+  }
+
+  const professor = await prisma.professor.findFirst({
+    where: {
+      email,
+      ativo: true,
+    },
+    select: {
+      academiaId: true,
+      nome: true,
+    },
+  })
+
+  if (!professor) {
+    return null
+  }
+
+  return {
+    academiaId: professor.academiaId,
+    nome: professor.nome,
+  }
 }
 
 export async function importStudentsSpreadsheet(formData: FormData): Promise<ImportStudentsResult> {
@@ -140,5 +202,55 @@ export async function importStudentsSpreadsheet(formData: FormData): Promise<Imp
     updated,
     ignored,
     errors,
+  }
+}
+
+export async function saveStudentWorkout(formData: FormData): Promise<SaveStudentWorkoutResult> {
+  const actor = await getCurrentStaffContext()
+
+  if (!actor) {
+    return { error: 'Apenas professores e equipe interna podem editar treinos.' }
+  }
+
+  const alunoId = String(formData.get('alunoId') ?? '').trim()
+  const treinoPersonalizado = String(formData.get('treinoPersonalizado') ?? '').trim()
+
+  if (!alunoId) {
+    return { error: 'Aluno inválido.' }
+  }
+
+  const treinoAtualizadoEm = treinoPersonalizado ? new Date() : null
+
+  try {
+    const result = await prisma.aluno.updateMany({
+      where: {
+        id: alunoId,
+        academiaId: actor.academiaId,
+      },
+      data: {
+        treinoPersonalizado: treinoPersonalizado || null,
+        treinoAtualizadoEm,
+        treinoAtualizadoPor: treinoPersonalizado ? actor.nome : null,
+      },
+    })
+
+    if (result.count === 0) {
+      return { error: 'Não foi possível localizar esse aluno para salvar o treino.' }
+    }
+
+    revalidatePath('/alunos')
+    revalidatePath('/treino')
+
+    return {
+      success: treinoPersonalizado ? 'Treino salvo com sucesso.' : 'Treino removido com sucesso.',
+      updatedLabel: treinoAtualizadoEm
+        ? `Atualizado em ${treinoAtualizadoEm.toLocaleString('pt-BR', {
+            dateStyle: 'short',
+            timeStyle: 'short',
+          })} por ${actor.nome}`
+        : null,
+    }
+  } catch {
+    return { error: 'Não foi possível salvar o treino agora.' }
   }
 }
